@@ -1,0 +1,323 @@
+// app global css in SCSS form
+
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+// .body {
+//   // for your app's header
+//   margin-top: constant(safe-area-inset-top); // for iOS 11.0
+//   margin-top: env(safe-area-inset-top); // for iOS 11.2 +
+//   // for your app's footer
+//   margin-bottom: constant(safe-area-inset-bottom);
+//   margin-bottom: env(safe-area-inset-bottom);
+// }
+
+.text-body {
+  font-family: "Mulish", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.page-overlay {
+  width: 100vw;
+  height: 100vh;
+  flex-grow: 0;
+  padding: 0 0 20px;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+}
+
+.page-overlay-language {
+  width: 100vw;
+  height: 100vh;
+  flex-grow: 0;
+  padding: 0 0 20px;
+  background-color: rgba(188, 201, 113, 0.144);
+}
+
+.signup-page {
+  /* Ensure the element covers the entire viewport */
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  /* Set the background image and ensure it covers the entire element */
+  background-image: url("~/src/assets/SplashScreen.png"); /* Adjust the path as per your project structure */
+  background-size: cover;
+  background-position: center;
+}
+
+.Frame-622 {
+  position: absolute;
+  bottom: 0%;
+  left: 20%;
+  width: 60vw;
+  height: 10vh;
+  background-color: #1a1d0700;
+}
+
+.button-box {
+  position: absolute;
+  bottom: 25%;
+  left: 5%;
+  width: 90vw;
+  height: 10vh;
+  background-color: #1a1d0700;
+}
+
+.button-box-language {
+  position: absolute;
+  bottom: 55%;
+  left: 5%;
+  width: 90vw;
+  height: 10vh;
+  background-color: #1a1d0700;
+}
+
+.form-text {
+  font-size: larger;
+}
+
+.lang-header {
+  // font-family: Mulish;
+  font-size: 28px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.14px;
+  text-align: left;
+  color: #fff;
+}
+
+.selection-header {
+  // font-family: Mulish;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  text-align: center;
+  color: #404715;
+}
+
+.question-text {
+  font-family: Mulish;
+  font-size: 24px;
+  font-weight: 500;
+  // font-stretch: normal;
+  // font-style: normal;
+  // line-height: 1;
+  // letter-spacing: 0.08px;
+  // color: #404715;
+}
+
+.text-box {
+  font-family: Mulish;
+  font-size: 16px;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  text-align: center;
+  color: #3e460c;
+}
+
+.caption-text {
+  font-family: Mulish;
+  font-size: 16px;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  text-align: left;
+  color: #3e460c;
+}
+
+.label-text {
+  font-family: Mulish;
+  font-size: 16px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  text-align: left;
+  color: #3e460c;
+}
+
+.nav-text {
+  font-family: Mulish;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #2a2c1980;
+}
+
+.option-list {
+  background-color: #6370121c;
+  border-radius: 15px;
+  font-family: Mulish;
+  font-size: 16px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  text-align: left;
+  color: #3e460c;
+}
+
+.shadow-bottom {
+  margin-right: 2%;
+  padding: 20px; /* Adjust padding as needed */
+  box-shadow: 0 24px 0px 0px rgba(255, 255, 255, 0.712); /* White shadow effect */
+  /* Adjust shadow values as needed */
+}
+
+.main-footer {
+  width: 100vw;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 41px 0 0;
+  padding: 5px 20px;
+  // border-top: solid 2px #cfe5d3;
+  background-color: #fdfffd;
+  border-radius: 0px 0px 0px 0px;
+}
+
+.active-tab {
+  border-top: solid 3px #829121;
+}
+
+.main-header {
+  width: 100vw;
+  height: 104px;
+  flex-grow: 0;
+  padding: 0 0 19px;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.35),
+      rgba(0, 0, 0, 0.35)
+    ),
+    linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%),
+    url("~/src/assets/SplashScreen.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.head-text {
+  font-family: Mulish;
+  font-size: 28px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #404715;
+}
+
+.tab-text {
+  font-family: Mulish;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #404715;
+}
+
+.tab-text-light {
+  font-family: Mulish;
+  font-size: 16px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #404715;
+}
+
+.tab-header {
+  font-family: Mulish;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #404715;
+}
+
+.header-text {
+  font-family: Mulish;
+  font-size: 28px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #ffffff;
+}
+
+.header-home {
+  /* Ensure the element covers the entire viewport */
+  width: 100%;
+  height: 15vh;
+  border-radius: 0px 24px 24px;
+  background-color: #6370121c;
+}
+
+.card-home {
+  /* Ensure the element covers the entire viewport */
+  width: 100%;
+  height: 15vh;
+  border-radius: 24px;
+  background-color: #6370121c;
+}
+
+.sign-logger-card {
+  width: 100%;
+  border-radius: 10px;
+  background-color: #d9e0a62c;
+}
+
+.sign-logger-card-text {
+  font-family: Mulish;
+  font-size: 24px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.08px;
+  color: #404715;
+}
+
+.horizontal-content {
+  /* Ensure the element covers the entire viewport */
+  width: 100vw;
+  // height: 40vh;
+  border-radius: 20px;
+  // background-color: rgba(199, 155, 163, 0.48);
+}
+
+.tab-action-btn {
+  border-radius: 10px;
+  background-color: #f3ffa594;
+}
+
+.footer-div {
+  background-image: linear-gradient(to top, #fff 85%, rgba(255, 255, 255, 0.863) 90%, rgba(231, 231, 231, 0) 100%);
+}
+
+.footer-div-user-meta {
+  background-image: linear-gradient(to top, #ffffffd0 80%, rgba(255, 255, 255, 0.507) 80%, rgba(231, 231, 231, 0) 100%);
+}

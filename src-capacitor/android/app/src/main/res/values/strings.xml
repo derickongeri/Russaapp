@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">com.rusaapp.www</string>
+    <string name="title_activity_main">com.rusaapp.www</string>
+    <string name="package_name">org.capacitor.rusa.app</string>
+    <string name="custom_url_scheme">org.capacitor.rusa.app</string>
+</resources>
