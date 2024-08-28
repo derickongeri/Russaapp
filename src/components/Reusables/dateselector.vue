@@ -1,14 +1,14 @@
 <template>
-  <div class="q-py-md">
+  <div class="q-mb-sm q-mx-md" style="width: 100%;">
     <q-btn
-      icon-right="event"
+      icon-right="ti-calendar"
       size="lg"
       unelevated
       outline
       no-caps
       :label="formattedDate"
-      class="full-width tab-action-btn"
-      text-color="primary"
+      class="full-width header-text tab-action-btn"
+      text-color=""
     >
       <q-popup-proxy
         @before-show="updateProxy"

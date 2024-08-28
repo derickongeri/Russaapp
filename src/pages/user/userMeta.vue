@@ -1,12 +1,71 @@
 <template>
+  <div
+    class=""
+    style="position: absolute; height: 15vh; width: 100vw; z-index: 10"
+  >
+    <div class="row" style="width: 100vw; height: 15vh; position: relative">
+      <div
+        class="row items-center bg-white"
+        style="position: absolute; width: 100vw; height: 10vh; bottom: 0%"
+      >
+        <div class="col-2">
+          <q-circular-progress
+            show-value
+            class="text-primary q-ml-md"
+            :value="progress.step"
+            :min="0"
+            :max="4"
+            size="56px"
+            color="primary"
+            track-color="light-green-1"
+          >
+            {{ progress.step }} of 4
+          </q-circular-progress>
+        </div>
+
+        <q-item class="col-8">
+          <q-item-section>
+            <q-item-label
+              class="question-text"
+              style="font-size: 20px; font-weight: 700"
+              >{{ progress.title }}</q-item-label
+            >
+            <q-item-label class="caption-text">{{
+              progress.caption
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <div class="col-2">
+          <q-btn
+            dense
+            unelevated
+            rounded
+            label="Skip"
+            color=""
+            text-color="black"
+            @click="skip()"
+          />
+        </div>
+        <!-- <q-btn
+          style="min-width: 124px; min-height: 50px"
+          unelevated
+          rounded
+          label="Skip"
+          color=""
+          text-color="black"
+          @click="prevStep"
+        /> -->
+      </div>
+    </div>
+  </div>
   <div class="onboarding">
     <q-stepper
       class=""
+      header-class="stepper-header"
       flat
       v-model="step"
       alternative-labels
-      header-nav
-      contracted
     >
       <q-step
         class="q-pa-none step q-my-none"
@@ -15,29 +74,10 @@
         icon="mdi-text-account"
         :done="step > 1"
       >
-        <div class="meta-form q-my-none column items-center">
-          <!-- <div
-            class="row q-mb-sm items-center selection-header justify-center"
-            style="width: 100%"
-          >
-            About Me
-          </div> -->
-          <div
-            class="row q-mb-md items-center text-box justify-center"
-            style="width: 100%"
-          >
-            {{ lorem }}
-          </div>
-          <div
-            class="row q-my-sm items-center selection-header justify-center"
-            style="width: 100%"
-          >
-            Age
-          </div>
-
+        <div>
           <ageSelector />
 
-          <div class="q-py-md">
+          <!-- <div class="q-py-md">
             <q-btn-toggle
               v-model="model"
               class="my-custom-toggle"
@@ -52,9 +92,7 @@
                 { label: 'Lb/ft', value: 'two' },
               ]"
             />
-          </div>
-          <weightSelector />
-          <heightSelector />
+          </div> -->
         </div>
       </q-step>
 
@@ -136,19 +174,19 @@
             label="GET STARTED"
             color="primary"
             text-color="white"
-            to="/home"
+            @click="finish()"
           />
         </div>
       </template>
 
       <template v-slot:message>
-        <div
+        <!-- <div
           v-if="step === 'step1'"
           class="row q-mb-sm items-center selection-header justify-center"
           style="width: 100%"
         >
           About Me
-        </div>
+        </div> -->
 
         <!-- <div v-if="step === 'step2'" class="question-text q-px-md">
           Do you know your menopause status?
@@ -169,14 +207,22 @@
 <script setup>
 import { ref, computed } from "vue";
 import heightSelector from "src/components/Forms/heightSelection.vue";
-import ageSelector from "src/components/Forms/ageSelector.vue";
+import ageSelector from "src/components/Forms/physicalForm.vue";
 import weightSelector from "src/components/Forms/weightSelector.vue";
 import menopuaseStatus from "src/components/Forms/menopauseStatus.vue";
 import signsSelector from "src/components/Forms/singsSelector.vue";
 import healthStatus from "src/components/Forms/healthStatus.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const model = ref("one");
 const step = ref("step1");
+const progress = ref({
+  step: 1,
+  title: "Physical attributes",
+  caption: "Enter your age, weight, and height to get accurate health insights",
+});
 const lorem = ref(
   "Lorem ipsum dolor sit amet consectetur. Vulputate urna ultrices tempor quam lacus curabitur magnis."
 );
@@ -189,30 +235,77 @@ const answers = ref({
 const nextStep = () => {
   if (step.value === "step1") {
     step.value = "step2";
+    progress.value = {
+      step: 2,
+      title: "Menopause status",
+      caption:
+        "Your menopause status allows us to better assist you on your journey.",
+    };
   } else if (step.value === "step2") {
     step.value = "step3";
+    progress.value = {
+      step: 3,
+      title: "Menopause signs",
+      caption:
+        "Please select signs to help us provide you with a quick and easy tracking list",
+    };
   } else if (step.value === "step3") {
     step.value = "step4";
+    progress.value = {
+      step: 4,
+      title: "Health information",
+      caption: "Please share infomation for tailored care and recommendations",
+    };
   }
 };
 
 const prevStep = () => {
   if (step.value === "step2") {
     step.value = "step1";
+    progress.value = {
+      step: 1,
+      title: "Physical attributes",
+      caption:
+        "Enter your age, weight, and height to get accurate health insights",
+    };
   } else if (step.value === "step3") {
     step.value = "step2";
+    progress.value = {
+      step: 2,
+      title: "Menopause status",
+      caption:
+        "Your menopause status allows us to better assist you on your journey.",
+    };
   } else if (step.value === "step4") {
     step.value = "step3";
+    progress.value = {
+      step: 3,
+      title: "Menopause signs",
+      caption:
+        "Please select signs to help us provide you with a quick and easy tracking list",
+    };
   }
 };
 
+const skip = () => {
+  router.push({
+    name: "home",
+  });
+};
+
 const finish = () => {
-  console.log("Onboarding complete with answers:", answers.value);
-  // You can handle form submission or save the answers here
+  console.log("Onboarding complete with answers:");
+  router.push({
+    name: "home",
+  });
 };
 </script>
 
 <style scoped>
+.stepper-header {
+  display: none;
+}
+
 .onboarding {
   position: absolute;
   bottom: 2%;

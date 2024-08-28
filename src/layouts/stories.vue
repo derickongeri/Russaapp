@@ -15,9 +15,6 @@
           {{ currentRouteTitle }}
         </div>
       </div>
-      <div class="row items-center " style="width: 100vw;">
-        <dateSelector />
-      </div>
     </q-header>
 
     <q-page-container>

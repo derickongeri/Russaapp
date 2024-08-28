@@ -1,6 +1,8 @@
 // app global css in SCSS form
 
 @import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import 'home';
+@import 'bubbles';
 
 // .body {
 //   // for your app's header
@@ -199,9 +201,9 @@
 
 .main-header {
   width: 100vw;
-  height: 104px;
+  // height: 104px;
   flex-grow: 0;
-  padding: 0 0 19px;
+  padding: 0 0 0px;
   background-image: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.35),
@@ -271,17 +273,20 @@
 .header-home {
   /* Ensure the element covers the entire viewport */
   width: 100%;
-  height: 15vh;
-  border-radius: 0px 24px 24px;
-  background-color: #6370121c;
+
+  border-radius: 16px;
+  // background-color: #6370121c;
+   background-color: #e7e7e781;
 }
+
+
 
 .card-home {
   /* Ensure the element covers the entire viewport */
   width: 100%;
   height: 15vh;
-  border-radius: 24px;
-  background-color: #6370121c;
+  border-radius: 20px;
+  // background-color: #6370121c;
 }
 
 .sign-logger-card {
@@ -292,7 +297,7 @@
 
 .sign-logger-card-text {
   font-family: Mulish;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
@@ -315,9 +320,164 @@
 }
 
 .footer-div {
-  background-image: linear-gradient(to top, #fff 85%, rgba(255, 255, 255, 0.863) 90%, rgba(231, 231, 231, 0) 100%);
+  background-image: linear-gradient(
+    to top,
+    #fff 85%,
+    rgba(255, 255, 255, 0.863) 90%,
+    rgba(231, 231, 231, 0) 100%
+  );
 }
 
 .footer-div-user-meta {
-  background-image: linear-gradient(to top, #ffffffd0 80%, rgba(255, 255, 255, 0.507) 80%, rgba(231, 231, 231, 0) 100%);
+  background-image: linear-gradient(
+    to top,
+    #ffffffd0 80%,
+    rgba(255, 255, 255, 0.507) 80%,
+    rgba(231, 231, 231, 0) 100%
+  );
+}
+
+.bubble {
+  width: 40vw;
+  height: 40vw;
+  background: #8291216b;
+  transition: all 1s ease-in-out;
+  animation: wave 8s ease-in-out infinite;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.bubble2 {
+  width: 40vw;
+  height: 40vw;
+  background: #8291216b;
+  transition: all 1s ease-in-out;
+  animation: wave 8s ease-in-out infinite;
+  border-radius: 50% 40% 30% 70% / 60% 30% 70% 40%;
+  rotate: -45deg;
+}
+
+.bubble3 {
+  width: 40vw;
+  height: 40vw;
+  background: #8291216b;
+  transition: all 1s ease-in-out;
+  animation: wave 8s ease-in-out infinite;
+  border-radius: 50% 40% 30% 70% / 60% 30% 70% 40%;
+  rotate: 70deg;
+}
+
+@keyframes wave {
+  0% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+
+  50% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  100% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+}
+
+.button-art {
+  min-height: 90px;
+  min-width: 60%;
+  background-size: fit;
+  background-position: center;
+}
+
+.button-art-1 {
+  background-image: url("~/src/assets/lineart1.png");
+}
+
+.button-art-2 {
+  background-image: url("~/src/assets/lineart2.png");
+}
+
+.button-art-3 {
+  background-image: url("~/src/assets/lineart1.png");
+}
+
+.morph,
+.morph:after,
+.morph:before {
+  border-radius: 42% 58% 70% 30%/45% 45% 55% 55%;
+}
+
+.morph {
+  background-image: linear-gradient(120deg, #18f48e 0, #0be881 100%);
+  width: 300px;
+  height: 300px;
+  transform-style: preserve-3d;
+  outline: 1px solid transparent;
+  will-change: border-radius;
+}
+
+.morph:after,
+.morph:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-shadow: 5px 5px 89px rgba(24, 244, 142, 0.21);
+  will-change: border-radius, transform, opacity;
+  animation-delay: 200ms;
+  background-image: linear-gradient(
+    120deg,
+    rgba(10, 208, 115, 0.55) 0,
+    rgba(24, 244, 142, 0.89) 100%
+  );
+}
+
+.morph,
+.morph:before {
+  animation: morph 10s linear infinite;
+}
+
+.morph:before {
+  opacity: 0.21;
+  animation-duration: 4s;
+}
+
+@keyframes morph {
+  0%,
+  to {
+    border-radius: 42% 58% 70% 30%/45% 45% 55% 55%;
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
+  }
+
+  34% {
+    border-radius: 70% 30% 46% 54%/30% 29% 71% 70%;
+    transform: translate3d(0, 5px, 0) rotateZ(0.01deg);
+  }
+
+  50% {
+    opacity: 0.89;
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
+  }
+
+  67% {
+    border-radius: 100% 60% 60% 100%/100% 100% 60% 60%;
+    transform: translate3d(0, -3px, 0) rotateZ(0.01deg);
+  }
+}
+
+.story-card {
+  width: 50vw;
+  height: 30vh;
+  border: solid 1px;
+  border-radius: 20px;
+}
+
+.add-story-card {
+  background-color: #6370121c;
+  border: solid 1px;
+}
+
+.read-story-card {
+  background-color: #0be881;
 }

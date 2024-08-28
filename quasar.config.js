@@ -21,7 +21,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
-    boot: ["i18n", "axios", "splashscreen"],
+    boot: ["i18n", "axios", "splashscreen", "vuesocials"],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
     css: ["app.scss"],
@@ -30,9 +30,9 @@ module.exports = configure(function (ctx) {
     extras: [
       // 'ionicons-v4',
       "mdi-v6",
-      // 'fontawesome-v6',
+      "fontawesome-v6",
       // 'eva-icons',
-      // 'themify',
+      "themify",
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
@@ -46,6 +46,8 @@ module.exports = configure(function (ctx) {
 
       // transpile: false,
       // publicPath: '/',
+
+      cssAddon: "src/css/quasar.variables.scss",
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -91,7 +93,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Dialog"],
+      plugins: ["Dialog", "LocalStorage", "SessionStorage"],
     },
 
     // animations: 'all', // --- includes all animations

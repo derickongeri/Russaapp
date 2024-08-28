@@ -1,17 +1,19 @@
 <template>
-  <div
+  <!-- <div
     class="q-px-md bg-white"
     style="position: fixed; z-index: 10; top: 12%; width: 100vw"
   >
     <dateSelector />
-  </div>
-  <div class="" style="width: 100vw; margin-top: 25%">
-    <q-scroll-area
-      :thumb-style="thumbStyle"
-      :bar-style="barStyle"
-      style="height: 65vh; min-width: 100%"
+  </div> -->
+  <div class="" style="width: 100vw;">
+
+    <div
+      class="question-text text-center text-grey-9 q-pa-md"
+      style="width: 100%; margin: auto; font-weight: 700; font-size: 24px"
     >
-      <div class="row items-center justify-between q-px-md" style="width: 100%">
+      Noticed any signs? Select from the list or add a sign
+    </div>
+      <!-- <div class="row items-center justify-between q-px-md" style="width: 100%">
         <div class="sign-logger-card-text">My frequent signs</div>
         <q-btn
           class="tab-text-light"
@@ -21,11 +23,11 @@
           label="Edit this list"
           icon-right="mdi-playlist-edit"
         />
-      </div>
-      <div class="q-px-md" style="width: 100vw">
+      </div> -->
+      <div class="q-px-md" style="width: 100vw;margin-top: 5%;">
         <signLogger />
       </div>
-    </q-scroll-area>
+      <div class="row" style="height:12vh;width: 100%;"></div>
 
     <div
       class="column footer-div justify-center q-pa-md items-center"

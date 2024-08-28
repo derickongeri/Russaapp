@@ -4,32 +4,11 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/IndexPage.vue") },
-      {
-        path: "/auth",
-        name: "auth",
-        component: () => import("pages/user/indexPage.vue"),
-      },
-      {
-        path: "/meta/language",
-        name: "lang",
-        component: () => import("pages/user/languageSelection.vue"),
-      },
-      {
-        path: "/meta/user",
-        name: "meta",
-        component: () => import("pages/user/userMeta.vue"),
-      },
-    ],
-  },
-  {
-    path: "/home",
-    component: () => import("layouts/contentLayout.vue"),
-    children: [
       {
         path: "",
+        name: "home",
         component: () => import("pages/home.vue"),
-        meta: { title: "Home" },
+        meta: { title: "Rusa" },
       },
       {
         path: "/utu",
@@ -53,13 +32,91 @@ const routes = [
   },
 
   {
+    path: "/User",
+    component: () => import("layouts/onBoardingLayout.vue"),
+    children: [
+      {
+        path: "/auth",
+        name: "auth",
+        component: () => import("pages/user/indexPage.vue"),
+      },
+      {
+        path: "/meta/language",
+        name: "lang",
+        component: () => import("pages/user/languageSelection.vue"),
+      },
+      {
+        path: "/meta/user",
+        name: "meta",
+        component: () => import("pages/user/userMeta.vue"),
+      },
+    ],
+  },
+
+  {
     path: "/Logs",
     component: () => import("layouts/journalLayout.vue"),
     children: [
       {
         path: "/signs",
+        name: "signs",
         component: () => import("pages/Journal/singsJournal.vue"),
-        meta: { title: "Log Sings" },
+        meta: { title: "Sings" },
+      },
+      {
+        path: "/sleep",
+        name: "sleep",
+        component: () => import("pages/Journal/sleepJournal.vue"),
+        meta: { title: "My sleep" },
+      },
+      {
+        path: "/sleepnotes",
+        name: "sleepnotes",
+        component: () => import("pages/Journal/sleepJournalNotes.vue"),
+        meta: { title: "My sleep" },
+      },
+      {
+        path: "/mood",
+        name: "mood",
+        component: () => import("pages/Journal/singsJournal.vue"),
+        meta: { title: "My mood" },
+      },
+      {
+        path: "/movement",
+        name: "movement",
+        component: () => import("pages/Journal/movement.vue"),
+        meta: { title: "My movement" },
+      },
+      {
+        path: "/movementlog",
+        name: "movementlog",
+        component: () => import("pages/Journal/movement_log.vue"),
+        meta: { title: "My movement" },
+      },
+      {
+        path: "/period",
+        name: "period",
+        component: () => import("pages/Journal/sleepJournal.vue"),
+        meta: { title: "My Cycle" },
+      },
+    ],
+  },
+
+  {
+    path: "/stories",
+    component: () => import("layouts/stories.vue"),
+    children: [
+      {
+        path: "/createpost",
+        name: "poststory",
+        component: () => import("pages/Stories/postStory.vue"),
+        meta: { title: "Create story" },
+      },
+      {
+        path: "/readpost",
+        name: "readstory",
+        component: () => import("pages/Stories/readStory.vue"),
+        meta: { title: "Story" },
       },
     ],
   },

@@ -12,6 +12,7 @@
     "icon": "icongenie generate -i AppIcon.png --skip-trim --background SplashScreen.png --theme-color 697523"
   },
   "dependencies": {
+    "@capacitor/keyboard": "^6.0.2",
     "@capacitor/splash-screen": "^6.0.1",
     "@capacitor/status-bar": "^6.0.0",
     "@quasar/extras": "^1.16.4",
@@ -22,7 +23,8 @@
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-i18n": "^9.0.0",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0",
+    "vue-socials": "^2.0.5"
   },
   "devDependencies": {
     "@quasar/app-webpack": "^3.0.0"
