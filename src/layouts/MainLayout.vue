@@ -93,7 +93,7 @@ import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { isUserOnboarded } from "src/utils/onboarding";
-import onboarding from "/home/derick/Desktop/Menopause/RUSA/src/components/Reusables/onboarding.vue";
+import onboarding from "src/components/Reusables/onboarding.vue";
 
 const $q = useQuasar();
 

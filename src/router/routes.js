@@ -96,7 +96,7 @@ const routes = [
       {
         path: "/period",
         name: "period",
-        component: () => import("pages/Journal/sleepJournal.vue"),
+        component: () => import("pages/Journal/period_log.vue"),
         meta: { title: "My Cycle" },
       },
     ],
