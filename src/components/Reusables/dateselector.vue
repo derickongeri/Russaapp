@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-sm q-mx-md" style="width: 100%;">
+  <div class="q-mb-sm q-mx-md" style="width: 100%">
     <q-btn
       icon-right="ti-calendar"
       size="lg"
@@ -16,7 +16,7 @@
         transition-show="scale"
         transition-hide="scale"
       >
-        <q-date v-model="proxyDate" mask="dddd, MMM D, YYYY">
+        <q-date v-model="proxyDate" :options="optionsFn">
           <div class="row items-center justify-end q-gutter-sm">
             <q-btn label="Cancel" color="primary" flat v-close-popup />
             <q-btn
@@ -33,58 +33,89 @@
   </div>
 </template>
 
-<script>
-import { ref, computed } from "vue";
+<script setup>
+import { ref, computed, onMounted, watch } from "vue";
 import { format } from "date-fns"; // Import date-fns for date formatting
+import { useLogsStore } from "src/stores/logs";
+
+const logsStore = useLogsStore();
 
 // Helper function to get ordinal suffix
 function getOrdinalSuffix(day) {
-  if (day >= 11 && day <= 13) return 'th';
+  if (day >= 11 && day <= 13) return "th";
   switch (day % 10) {
-    case 1: return 'st';
-    case 2: return 'nd';
-    case 3: return 'rd';
-    default: return 'th';
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
   }
 }
 
-export default {
-  setup() {
-    const today = new Date(); // Get today's date
-    const date = ref(today);
-    const proxyDate = ref(today);
+function getFormattedToday() {
+  const today = new Date(); // Get today's date
+  const year = today.getFullYear(); // Get the full year (e.g., 2024)
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Get the month (0-indexed, so we add 1), and ensure two digits
+  const day = String(today.getDate()).padStart(2, "0"); // Get the day and ensure two digits
 
-    // Create a computed property to format the date with the required format
-    const formattedDate = computed(() => {
-      const dayOfWeek = format(date.value, "EEE"); // Short day of the week (e.g., Wed)
-      const dayOfMonth = format(date.value, "d"); // Day of the month (e.g., 10)
-      const month = format(date.value, "MMM"); // Short month (e.g., Jul)
-      const year = format(date.value, "yyyy"); // Year (e.g., 2024)
+  return `${year}/${month}/${day}`; // Return in yyyy/mm/dd format
+}
 
-      const ordinalSuffix = getOrdinalSuffix(parseInt(dayOfMonth, 10)); // Get the correct suffix
+const today = new Date(); // Get today's date
+const date = ref(getFormattedToday());
+const proxyDate = ref(getFormattedToday());
 
-      return `${dayOfWeek} ${dayOfMonth}${ordinalSuffix} ${month} ${year}`;
-    });
+// Create a computed property to format the date with the required format
+const formattedDate = computed(() => {
+  let datestring;
+  const todaysDate = getFormattedToday();
 
-    // Update the proxyDate when the popup opens
-    function updateProxy() {
-      proxyDate.value = date.value;
-    }
+  if (date.value === todaysDate) {
+    datestring = `Today`;
+  } else {
+    const dayOfWeek = format(date.value, "EEE"); // Short day of the week (e.g., Wed)
+    const dayOfMonth = format(date.value, "d"); // Day of the month (e.g., 10)
+    const month = format(date.value, "MMM"); // Short month (e.g., Jul)
+    const year = format(date.value, "yyyy"); // Year (e.g., 2024)
 
-    // Save the selected date
-    function save() {
-      date.value = proxyDate.value;
-    }
+    const ordinalSuffix = getOrdinalSuffix(parseInt(dayOfMonth, 10)); // Get the correct suffix
 
-    return {
-      date,
-      proxyDate,
-      formattedDate, // Bind formattedDate to the button label
-      updateProxy,
-      save,
-    };
-  },
+    datestring = `${dayOfWeek} ${dayOfMonth}${ordinalSuffix} ${month} ${year}`;
+  }
+
+  return datestring;
+});
+
+// Update the proxyDate when the popup opens
+const updateProxy = function () {
+  proxyDate.value = date.value;
 };
+
+// Save the selected date
+const save = function () {
+  date.value = proxyDate.value;
+  logsStore.setLogsDate(proxyDate.value);
+  logsStore.setDisplayDate(formattedDate.value);
+};
+
+const optionsFn = (date) => {
+  const today = new Date(); // Get today's date
+  const year = today.getFullYear(); // Get the full year (e.g., 2024)
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Get the month (0-indexed, so we add 1), and ensure two digits
+  const day = String(today.getDate()).padStart(2, "0"); // Get the day and ensure two digits
+
+  return date <= `${year}/${month}/${day}`;
+};
+
+onMounted(() => {
+  date.value = getFormattedToday();
+  proxyDate.value = getFormattedToday();
+  logsStore.setLogsDate(getFormattedToday());
+  logsStore.setDisplayDate(formattedDate.value);
+});
 </script>
 
 <style scoped>

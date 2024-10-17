@@ -1,5 +1,11 @@
 <template>
-  <div class="q-my-">
+  <div
+    class="q-ma-md q-py-lg header-text text-primary"
+    style="font-size: xx-large"
+  >
+    {{ displayDate }}
+  </div>
+  <div class="q-my-md">
     <div class="row items-center justify-between">
       <div class="col text-right q-pr-lg text-grey-6">NONE</div>
 
@@ -14,14 +20,19 @@
     </div>
   </div>
 
-  <div class="q-my-md" v-for="option in options">
+  <div class="q-my-md">
     <div class="row items-center justify-between">
-      <div class="col-4">
-        <div class="sign-logger-card-text q-px-md">{{ option.label }}</div>
+      <div class="col-4 q-px-sm">
+        <div
+          class="sign-logger-card-text q-px-md"
+          style="font-weight: 700; font-size: x-large"
+        >
+          {{ option.label }}
+        </div>
       </div>
 
       <div class="col">
-        <div class="row items-center">
+        <div class="row items-center q-pr-md">
           <div class="col column items-center">
             <q-radio
               v-model="option.rating"
@@ -110,6 +121,36 @@
       </div>
     </div>
   </div>
+
+  <div class="q-mt-xl" style="width: 100%">
+    <div
+      class="row justify-center q-ma-md bg-green-1 q-py-sm"
+      style="border-radius: 10px; font-size: large"
+    >
+      <q-checkbox
+        class="q-px-md"
+        size="md"
+        name="accept_agreement"
+        v-model="acceptAgreement"
+        label="Add to My list of frequent signs"
+        left-label
+      />
+    </div>
+  </div>
+
+  <div class="row q-mt-md q-pa-md" style="width: 100%">
+    <q-btn
+      no-caps
+      class="tab-text"
+      size="lg"
+      unelevated
+      rounded
+      color="primary"
+      label="Save"
+      :disable="!submitState"
+      style="width: 100%"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -125,54 +166,34 @@ const { supabase } = useSupabase();
 const signsStore = useSignsStore();
 const logsStore = useLogsStore();
 
-const options = ref();
+const displayDate = ref(logsStore.displayDate);
 
-const fetchUserSings = async () => {
-  let signsList;
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const email = user?.email;
-  const date = logsStore.selectedLogsDate;
-
-  try {
-    const { data, error } = await supabase
-      .from("loged_signs")
-      .select("*")
-      .eq("email", email) // Filter by email
-      .eq("email", date) // Filter by email
-      .single(); // We use .single() to get a single row
-
-    console.log(data)
-
-    signsList = data.signs_log;
-  } catch (error) {
-    signsList = signsStore.userSigns.map((sign) => ({
-      label: sign.label,
-      value: sign.label,
-      rating: "none", // Default rating
-    }));
-  }
-
-  options.value = signsList;
-
-  return signsList;
-};
+const option = ref({});
+const acceptAgreement = ref(false);
 
 const setColor = (option, val, color) => {
   return option === val ? color : "grey-4";
 };
 
+const submitState = computed(() => {
+  return option.value.rating !== "none"
+})
+
 onMounted(() => {
-  fetchUserSings()
+  const sign = logsStore.added_sign;
+
+  option.value = {
+    label: sign.label,
+    value: sign.label,
+    rating: "none",
+  };
 });
 
 watch(
-  options,
+  option,
   (val) => {
-    console.log(val);
-    logsStore.addSignsLog(val);
+    // console.log(val);
+    // logsStore.addSignsLog(val);
   },
   { deep: true }
 );

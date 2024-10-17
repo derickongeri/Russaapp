@@ -10,9 +10,7 @@
     >
       <template v-slot:label="opt">
         <div class="row items-center">
-          <span style="font-size: 20px" class="">{{
-            opt.label
-          }}</span>
+          <span style="font-size: 20px" class="">{{ opt.label }}</span>
         </div>
       </template>
     </q-option-group>
@@ -27,9 +25,7 @@
     >
       <template v-slot:label="opt">
         <div class="row items-center">
-          <span style="font-size: 20px" class="">{{
-            opt.label
-          }}</span>
+          <span style="font-size: 20px" class="">{{ opt.label }}</span>
         </div>
       </template>
     </q-option-group>
@@ -58,7 +54,9 @@
 
       <q-item clickable v-ripple>
         <q-item-section>
-          <q-item-label class="label-text">Menopause / Postmenopause </q-item-label>
+          <q-item-label class="label-text"
+            >Menopause / Postmenopause
+          </q-item-label>
           <q-item-label class="caption-text" caption>
             I have had no periods for the last 12 months or had both ovaries
             removed.
@@ -70,8 +68,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
+import { useMetaStore } from "src/stores/userMeta";
 
+const store = useMetaStore();
 const group = ref("");
 const status = ref("");
 
@@ -89,15 +89,26 @@ const statusOptions = ref([
 const options = ref([
   {
     label: "Premenopause",
-    value: "op1",
+    value: "Premenopause",
   },
   {
     label: "Perimenopause",
-    value: "op2",
+    value: "Perimenopause",
   },
   {
     label: "Menopause / Postmenopause",
-    value: "op3",
+    value: "Menopause",
   },
 ]);
+
+const menopauseStatus = computed(() => {
+  return {
+    user_knows: status.value,
+    status: group.value,
+  };
+});
+
+watch(menopauseStatus, (val) => {
+  store.addMenopauseStatus(val)
+}, { deep: true });
 </script>

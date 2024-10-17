@@ -1,0 +1,36 @@
+// This is just an example,
+// so you can safely delete all default props below
+
+export default {
+  failed: "L'action a échoué",
+  success: "L'action a réussi",
+
+  signs: {
+    abdominal_pain: "Douleur abdominale",
+    acne: "Acné",
+    anxiety: "Anxiété",
+    back_pain: "Douleur au dos",
+    breast_tenderness: "Sensibilité des seins",
+    cold_flashes: "Frissons",
+    depression: "Dépression",
+    difficulty_sleeping: "Difficulté à dormir",
+    dizziness: "Vertiges",
+    dry_skin: "Peau sèche",
+    fatigue: "Fatigue",
+    forgetfulness: "Oublis",
+    headaches: "Maux de tête",
+    hot_flashes: "Bouffées de chaleur",
+    irritability: "Irritabilité",
+    joint_pain: "Douleurs articulaires",
+    mood_swings: "Sautes d'humeur",
+    night_sweats: "Sueurs nocturnes",
+    osteoporosis: "Ostéoporose",
+    rapid_heartbeat: "Rythme cardiaque rapide",
+    skin_itching: "Démangeaisons cutanées",
+    stress_incontinence: "Incontinence liée au stress",
+    urinary_urgency: "Envie urgente d'uriner",
+    vaginal_dryness: "Sécheresse vaginale",
+    vaginal_itching: "Démangeaisons vaginales",
+    weight_gain: "Prise de poids",
+  },
+};

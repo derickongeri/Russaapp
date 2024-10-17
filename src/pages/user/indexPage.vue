@@ -31,7 +31,7 @@
         <q-dialog v-model="signup" seamless position="bottom">
           <q-card
             class="body-text"
-            style="min-height: 90vh; border-radius: 20px"
+            style="min-height: 95vh; border-radius: 20px"
           >
             <q-card-section class="row items-center q-pb-none">
               <q-space />
@@ -49,6 +49,7 @@
                 size="lg"
                 class="full-width bg-white"
                 outline
+                dense
                 rounded
                 color="primary"
                 label="Login"

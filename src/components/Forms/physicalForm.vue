@@ -4,9 +4,26 @@
     <div class="col-4 question-text q-my-md">Your birthday</div>
     <div class="row q-mb-xl items-center justify-between">
       <div class="col-12">
-        <q-input v-model="date" default-view="Years" filled>
-          <template v-slot:after>
-            <q-btn round dense flat icon="event" />
+        <q-input
+          outlined
+          v-model="physicalInfo.birthday"
+          mask="date"
+          :rules="['date']"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="physicalInfo.birthday">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
           </template>
         </q-input>
       </div>
@@ -18,8 +35,8 @@
       <div class="col-3 column justify-center" style="height: 100%">
         <q-input
           class="custom-input-style"
-          filled
-          v-model.number="model"
+          outlined
+          v-model.number="physicalInfo.height.value"
           type="number"
         />
       </div>
@@ -27,7 +44,7 @@
       <div class="col-3 column justify-center q-px-sm" style="height: 100%">
         <q-btn-toggle
           dense
-          v-model="unit.height"
+          v-model="physicalInfo.height.unit"
           spread
           class="my-custom-toggle"
           no-caps
@@ -36,8 +53,8 @@
           color="white"
           text-color="primary"
           :options="[
-            { label: 'm', value: 'one' },
-            { label: 'ft', value: 'two' },
+            { label: 'm', value: 'm' },
+            { label: 'ft', value: 'ft' },
           ]"
         />
       </div>
@@ -45,8 +62,8 @@
       <div class="col-3 column justify-center" style="height: 100%">
         <q-input
           class="custom-input-style"
-          filled
-          v-model.number="model"
+          outlined
+          v-model.number="physicalInfo.height.value_sec"
           type="number"
         />
       </div>
@@ -54,7 +71,7 @@
       <div class="col-3 column justify-center q-px-sm" style="height: 100%">
         <q-btn-toggle
           dense
-          v-model="unit.height"
+          v-model="physicalInfo.height.unit_sec"
           spread
           class="my-custom-toggle"
           no-caps
@@ -63,8 +80,8 @@
           color="white"
           text-color="primary"
           :options="[
-            { label: 'cm', value: 'one' },
-            { label: 'In', value: 'two' },
+            { label: 'cm', value: 'cm' },
+            { label: 'In', value: 'In' },
           ]"
         />
       </div>
@@ -76,8 +93,8 @@
       <div class="col-9 column justify-center" style="height: 100%">
         <q-input
           class="custom-input-style"
-          filled
-          v-model.number="model"
+          outlined
+          v-model.number="physicalInfo.weight.value"
           type="number"
         >
           <!-- <div
@@ -91,7 +108,7 @@
       <div class="col-3 column justify-center q-px-sm" style="height: 100%">
         <q-btn-toggle
           dense
-          v-model="unit.weight"
+          v-model="physicalInfo.weight.unit"
           spread
           class="my-custom-toggle"
           no-caps
@@ -100,8 +117,8 @@
           color="white"
           text-color="primary"
           :options="[
-            { label: 'Kg', value: 'one' },
-            { label: 'Lb', value: 'two' },
+            { label: 'Kg', value: 'kg' },
+            { label: 'Lb', value: 'lb' },
           ]"
         />
       </div>
@@ -109,53 +126,42 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
+import { useMetaStore } from "src/stores/userMeta";
 
-export default {
-  setup() {
-    const $q = useQuasar();
+const store = useMetaStore();
 
-    const name = ref(null);
-    const age = ref(null);
-    const accept = ref(false);
-
-    return {
-      unit: ref({ weight: "one", height: "one" }),
-      name,
-      age,
-      accept,
-      date: ref(""),
-      weightUnit: ref("Kg"),
-      weightOptions: ref(["Kg", "Lb"]),
-
-      onSubmit() {
-        if (accept.value !== true) {
-          $q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: "You need to accept the license and terms first",
-          });
-        } else {
-          $q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: "Submitted",
-          });
-        }
-      },
-
-      onReset() {
-        name.value = null;
-        age.value = null;
-        accept.value = false;
-      },
-    };
+const physicalInfo = ref({
+  birthday: "",
+  height: {
+    value: "",
+    unit: "m", // Default unit for height is meters
+    value_sec: "",
+    unit_sec: "cm", // Default unit for height is meters
   },
-};
+  weight: {
+    value: "",
+    unit: "kg", // Default unit for weight is kilograms
+  },
+});
+
+const physicaldata = computed(() => {
+  return physicalInfo.value;
+});
+
+watch(
+  physicaldata,
+  (val) => {
+    store.addPhysicalInfo(val);
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  physicalInfo.value = store.physicalInfo;
+});
 </script>
 
 <style>

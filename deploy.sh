@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script automatically builds the quasar projec, stages, commits and pushes code to a remote repository on Github.
-# quasar build
+quasar build
 
 # Define the remote repository URL
 REPO_URL="https://github.com/derickongeri/Russaapp.git"
@@ -28,4 +28,4 @@ echo "Pushhing to github..."
 git push $REPO_URL main
 
 # deploying to dev server
-# rsync -av /home/derick/Desktop/uog-portal/dist gmes@197.255.126.45:/home/gmes
+scp -r /home/derick/Desktop/Menopause/RUSA/dist/spa/* root@139.84.226.65:/var/www/html/rusa-app

@@ -5,189 +5,199 @@
   <q-scroll-area
     :thumb-style="thumbStyle"
     :bar-style="barStyle"
-    style="height: 70vh; min-width: 100%"
+    style="height: 65vh; min-width: 100%"
   >
-    <div class="q-py-md" style="width: 100%">
-      <q-list>
-        <q-expansion-item
-          expand-icon-class="expand-icon"
-          header-class="expansion-header"
-          label="Most common signs"
-          default-opened
+    <div class="row q-py-sm" style="width: 100%; min-height: 20vh">
+      <div class="bg-lime-1 q-pa-sm" style="width: 100%; min-height: 100%">
+        <q-chip
+          size="lg"
+          outline
+          color=""
+          v-for="(chip, index) in selectedSings"
+          :key="index"
+          removable
+          @remove="removeChip(index)"
         >
-          <div class="q-px-sm" v-for="option in options.slice(0, 6)">
-            <q-checkbox
-              class="justify-between q-ma-xs q-px-sm option-list"
-              v-model="group"
-              :label="option.label"
-              :val="option.value"
-              checked-icon="mdi-circle-slice-8"
-              unchecked-icon="mdi-circle-outline"
-              color="secondary"
-              size="xl"
-              left-label
-              style="min-width: 100%"
-            >
-            </q-checkbox>
-          </div>
-        </q-expansion-item>
-        <q-expansion-item
-          expand-icon-class="expand-icon"
-          header-class="expansion-header"
-          label="All signs"
-          default-opened
-        >
-          <div class="q-px-sm" v-for="option in options">
-            <q-checkbox
-              class="justify-between q-my-xs q-px-sm option-list"
-              v-model="group"
-              :label="option.label"
-              :val="option.value"
-              checked-icon="mdi-circle-slice-8"
-              unchecked-icon="mdi-circle-outline"
-              color="secondary"
-              size="xl"
-              left-label
-              style="min-width: 100%"
-            >
-              <!-- <template v-slot:label="opt">
-              <div class="row items-center" style="min-width: 70vw">
-                <span style="font-size: 16px" class="">{{ opt.label }}</span>
+          {{ chip.label }}
+        </q-chip>
+      </div>
+    </div>
+
+    <div class="q-py-sm" style="width: 100%">
+      <q-list class="rounded-borders">
+        <q-expansion-item v-model="expanded" label="Common activites">
+          <template v-slot:header>
+            <q-item-section>
+              <div class="header-text text-grey-9" style="font-size: 20px">
+                Common Signs
               </div>
-            </template> -->
-            </q-checkbox>
+            </q-item-section>
+          </template>
+          <div class="row justify-between">
+            <div
+              class="col-6"
+              v-for="sign in signList.slice(0, 7)"
+              :key="sign"
+            >
+              <div class="q-pa-xs" style="width: 100%">
+                <q-btn
+                  unelevated
+                  no-caps
+                  class="full-width log-button"
+                  :color="isSelected(sign) ? 'secondary' : 'green-1'"
+                  @click="toggleChip(sign)"
+                  style="height: 10vh; border-radius: 10px"
+                >
+                  <div
+                    class="column justify-around items-start no-wrap"
+                    style="width: 100%; height: 100%"
+                  >
+                    <div
+                      class="col head-text q-pt-sm self-start"
+                      style="
+                        font-size: 20px;
+                        font-weight: 700;
+                        width: 100%;
+                        height: 100%;
+                      "
+                    >
+                      <div
+                        class="row text-left"
+                        :style="{
+                          color: selectedSings.includes(sign)
+                            ? '#ffffff'
+                            : '#1D1D1D',
+                        }"
+                      >
+                        {{ sign.label }}
+                      </div>
+                    </div>
+                  </div>
+                </q-btn>
+              </div>
+            </div>
           </div>
         </q-expansion-item>
       </q-list>
+    </div>
+
+    <div class="q-py-sm" style="width: 100%">
+      <div class="row header-text text-grey-9 q-pa-md" style="font-size: 20px">
+        All signs
+      </div>
+      <div class="row q-py-md" style="min-width: 100%">
+        <q-input
+          v-model="searchQuery"
+          placeholder="Search activities..."
+          rounded
+          outlined
+          class="full-width"
+        >
+          <template v-slot:prepend>
+            <q-icon name="mdi-magnify" />
+          </template>
+        </q-input>
+      </div>
+
+      <div class="row justify-between">
+        <div class="col-6" v-for="sign in filteredSigns" :key="id">
+          <div class="q-pa-xs" style="width: 100%">
+            <q-btn
+              unelevated
+              no-caps
+              class="full-width log-button"
+              :color="isSelected(sign) ? 'secondary' : 'green-1'"
+              @click="toggleChip(sign)"
+              style="height: 10vh; border-radius: 10px"
+            >
+              <div
+                class="column justify-around items-start no-wrap"
+                style="width: 100%; height: 100%"
+              >
+                <div
+                  class="col head-text q-pt-sm self-start"
+                  style="
+                    font-size: 20px;
+                    font-weight: 700;
+                    width: 100%;
+                    height: 100%;
+                  "
+                  :style="{
+                    color: selectedSings.includes(sign)
+                      ? '#ffffff'
+                      : '#1D1D1D',
+                  }"
+                >
+                  <div class="row text-left">
+                    {{ sign.label }}
+                  </div>
+                </div>
+              </div>
+            </q-btn>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="height: 20vh; width: 100%"></div>
     </div>
   </q-scroll-area>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useSignsStore } from "src/stores/signs";
+import { useI18n } from "vue-i18n";
 
-const knowsStatus = ref("");
+const { t } = useI18n();
 
-const group = ref([]);
-const status = ref("yes");
+const signsStore = useSignsStore();
 
-const statusOptions = ref([
-  {
-    label: "Yes",
-    value: "yes",
-  },
-  {
-    label: "No",
-    value: "no",
-  },
-]);
+const router = useRouter();
 
-const options = ref([
-  {
-    label: "Abdominal pain",
-    value: "Abdominal pain",
-  },
-  {
-    label: "Acne",
-    value: "Acne",
-  },
-  {
-    label: "Anxiety",
-    value: "Anxiety",
-  },
-  {
-    label: "Back pain",
-    value: "Back pain",
-  },
-  {
-    label: "Breast tenderness",
-    value: "Breast tenderness",
-  },
-  {
-    label: "Cold flashes",
-    value: "Cold flashes",
-  },
-  {
-    label: "Depression",
-    value: "Depression",
-  },
-  {
-    label: "Difficulty sleeping",
-    value: "Difficulty sleeping",
-  },
-  {
-    label: "Dizziness",
-    value: "Dizziness",
-  },
-  {
-    label: "Dry skin",
-    value: "Dry skin",
-  },
-  {
-    label: "Fatigue",
-    value: "Fatigue",
-  },
-  {
-    label: "Forgetfulness",
-    value: "Forgetfulness",
-  },
-  {
-    label: "Headaches",
-    value: "Headaches",
-  },
-  {
-    label: "Hot flashes",
-    value: "Hot flashes",
-  },
-  {
-    label: "Irritability",
-    value: "Irritability",
-  },
-  {
-    label: "Joint pain",
-    value: "Joint pain",
-  },
-  {
-    label: "Mood swings",
-    value: "Mood swings",
-  },
-  {
-    label: "Night sweats",
-    value: "Night sweats",
-  },
-  {
-    label: "Osteoporosis",
-    value: "Osteoporosis",
-  },
-  {
-    label: "Rapid heartbeat",
-    value: "Rapid heartbeat",
-  },
-  {
-    label: "Skin itching",
-    value: "Skin itching",
-  },
-  {
-    label: "Stress incontinence",
-    value: "Stress incontinence",
-  },
-  {
-    label: "Urinary urgency",
-    value: "Urinary urgency",
-  },
-  {
-    label: "Vaginal dryness",
-    value: "Vaginal dryness",
-  },
-  {
-    label: "Vaginal itching",
-    value: "Vaginal itching",
-  },
-  {
-    label: "Weight gain",
-    value: "Weight gain",
-  },
-]);
+const expanded = ref(true);
+
+const signList = ref(signsStore.allSigns);
+
+const selectedSings = ref(signsStore.userSigns);
+const searchQuery = ref("");
+
+function addChip(sign) {
+  if (!selectedSings.value.includes(sign)) {
+    selectedSings.value.push(sign);
+  }
+}
+
+function toggleChip(addedSign) {
+  const index = selectedSings.value.indexOf(addedSign);
+  if (index === -1) {
+    // Add chip if not already in the list
+    selectedSings.value.push(addedSign);
+  } else {
+    // Remove chip if already in the list
+    selectedSings.value.splice(index, 1);
+  }
+}
+
+function removeChip(index) {
+  selectedSings.value.splice(index, 1);
+}
+
+// Computed property to filter signList based on search query
+const filteredSigns = computed(() => {
+  const listItems = signList.value.slice(7);
+  return listItems
+    .filter((sign) =>
+      sign.label.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+    .sort((a, b) => a.label.localeCompare(b));
+});
+
+const isSelected = (sign) => selectedSings.value.includes(sign);
+
+watch(selectedSings, (val) => {
+  signsStore.addSignsToUserSigns(selectedSings.value);
+},{deep: true});
 
 const thumbStyle = ref({
     right: "4px",

@@ -14,12 +14,12 @@
             class="text-primary q-ml-md"
             :value="progress.step"
             :min="0"
-            :max="4"
+            :max="3"
             size="56px"
             color="primary"
             track-color="light-green-1"
           >
-            {{ progress.step }} of 4
+            {{ progress.step }} of 3
           </q-circular-progress>
         </div>
 
@@ -104,23 +104,23 @@
         icon="mdi-gender-female"
       >
         <div style="min-height: 74vh">
-          <menopuaseStatus />
+          <signsSelector />
         </div>
       </q-step>
 
-      <q-step
+      <!-- <q-step
         class="q-pa-none step q-my-none"
         name="step3"
         title="Step 3"
         icon="mdi-format-list-checks"
       >
         <signsSelector />
-      </q-step>
+      </q-step> -->
 
       <q-step
         class="q-pa-none step q-my-none"
-        name="step4"
-        title="Step 4"
+        name="step3"
+        title="Step 3"
         icon="mdi-heart-pulse"
       >
         <div class="meta-form column items-center"></div>
@@ -137,10 +137,10 @@
             style="min-width: 124px; min-height: 50px"
             unelevated
             rounded
-            label="Back"
+            label="Cancel"
             color=""
             text-color="black"
-            @click="prevStep"
+            to="/"
           />
 
           <q-btn
@@ -155,7 +155,7 @@
           />
 
           <q-btn
-            v-if="step !== 'step4'"
+            v-if="step !== 'step3'"
             style="min-width: 124px; min-height: 50px"
             unelevated
             rounded
@@ -192,11 +192,11 @@
           Do you know your menopause status?
         </div> -->
 
-        <div v-if="step === 'step3'" class="question-text q-px-md">
+        <div v-if="step === 'step2'" class="question-text q-px-md">
           Select any menopause signs you have frequently noticed?
         </div>
 
-        <div v-if="step === 'step4'" class="question-text q-px-md">
+        <div v-if="step === 'step3'" class="question-text q-px-md">
           Have you been diagnosed with any of these health conditions?
         </div>
       </template>
@@ -213,17 +213,8 @@ import menopuaseStatus from "src/components/Forms/menopauseStatus.vue";
 import signsSelector from "src/components/Forms/singsSelector.vue";
 import healthStatus from "src/components/Forms/healthStatus.vue";
 import { useRouter } from "vue-router";
-import useSupabase from "src/boot/supabase";
-import { useMetaStore } from "src/stores/userMeta";
-import { useSignsStore } from "src/stores/signs";
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
 
 const router = useRouter();
-const store = useMetaStore();
-const signsStore = useSignsStore();
-const { supabase } = useSupabase();
 
 const model = ref("one");
 const step = ref("step1");
@@ -246,26 +237,26 @@ const nextStep = () => {
     step.value = "step2";
     progress.value = {
       step: 2,
-      title: "Menopause status",
+      title: "Menopause signs",
       caption:
-        "Your menopause status allows us to better assist you on your journey.",
+        "Please select signs to help us provide you with a quick and easy tracking list",
     };
   } else if (step.value === "step2") {
     step.value = "step3";
     progress.value = {
       step: 3,
-      title: "Menopause signs",
-      caption:
-        "Please select signs to help us provide you with a quick and easy tracking list",
-    };
-  } else if (step.value === "step3") {
-    step.value = "step4";
-    progress.value = {
-      step: 4,
       title: "Health information",
       caption: "Please share infomation for tailored care and recommendations",
     };
   }
+  // else if (step.value === "step3") {
+  //   step.value = "step4";
+  //   progress.value = {
+  //     step: 3,
+  //     title: "Health information",
+  //     caption: "Please share infomation for tailored care and recommendations",
+  //   };
+  // }
 };
 
 const prevStep = () => {
@@ -281,88 +272,17 @@ const prevStep = () => {
     step.value = "step2";
     progress.value = {
       step: 2,
-      title: "Menopause status",
+      title: "Menopause signs",
       caption:
-        "Your menopause status allows us to better assist you on your journey.",
+        "Please select signs to help us provide you with a quick and easy tracking list",
     };
   } else if (step.value === "step4") {
     step.value = "step3";
     progress.value = {
       step: 3,
-      title: "Menopause signs",
-      caption:
-        "Please select signs to help us provide you with a quick and easy tracking list",
+      title: "Health information",
+      caption: "Please share infomation for tailored care and recommendations",
     };
-  }
-};
-
-const submitUserMeta = async () => {
-  try {
-    // 1. Get the current user email
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const email = user?.email;
-
-    if (!email) {
-      throw new Error("User not logged in or email not available.");
-    }
-
-    // 2. Check if the user already exists in the user_profile table
-    const { data: userProfile, error } = await supabase
-      .from("user_profiles")
-      .select("*")
-      .eq("email", email)
-      .single();
-
-    if (error && error.code !== "PGRST116") {
-      throw error; // Handle other errors apart from 'no records found'
-    }
-
-    const physicalInfoJson = store.physicalInfo;
-    const menopauseStatusJson = store.menopauseStatus;
-    const healthConditionsJson = store.healthConditions;
-    const frequentSignsJson = signsStore.userSigns;
-
-    // 3. If no user found, insert new row with email and physicalInfo
-    if (!userProfile) {
-      const { error: insertError } = await supabase
-        .from("user_profiles")
-        .insert([
-          {
-            email: email,
-            physical_info: physicalInfoJson, // Store physical info as JSONB
-            knows_status: menopauseStatusJson,
-            frequent_signs: frequentSignsJson,
-            health_info: healthConditionsJson,
-          },
-        ]);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      console.log("New profile created successfully.");
-    } else {
-      // Optionally: Update existing profile's physical_info
-      const { error: updateError } = await supabase
-        .from("user_profiles")
-        .update({
-          physical_info: physicalInfoJson, // Store physical info as JSONB
-          knows_status: menopauseStatusJson,
-          frequent_signs: frequentSignsJson,
-          health_info: healthConditionsJson,
-        })
-        .eq("email", email);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      console.log("Profile updated successfully.");
-    }
-  } catch (error) {
-    console.error("Error in submitting physical info:", error.message);
   }
 };
 
@@ -372,11 +292,10 @@ const skip = () => {
   });
 };
 
-const finish = async () => {
-  await submitUserMeta().then(() => {
-    router.push({
-      name: "home",
-    });
+const finish = () => {
+  console.log("Onboarding complete with answers:");
+  router.push({
+    name: "home",
   });
 };
 </script>

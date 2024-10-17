@@ -7,6 +7,21 @@
     :bar-style="barStyle"
     style="height: 70vh; min-width: 100%"
   >
+    <div class="row q-py-sm" style="width: 100%; min-height: 20vh">
+      <div class="bg-lime-1 q-pa-sm" style="width: 100%; min-height: 100%">
+        <q-chip
+          size=""
+          outline
+          color=""
+          v-for="(chip, index) in group"
+          :key="chip"
+          removable
+          @remove="removeChip(index)"
+        >
+          {{ chip }}
+        </q-chip>
+      </div>
+    </div>
     <div class="q-py-md" style="width: 100%">
       <q-list>
         <q-expansion-item
@@ -15,13 +30,8 @@
           v-for="(diseases, category) in groupedConditions"
           :key="category"
           :label="category"
-
         >
-          <div
-            v-for="condition in diseases"
-            :key="condition.value"
-
-          >
+          <div v-for="condition in diseases" :key="condition.value">
             <q-checkbox
               class="justify-between q-ma-xs q-px-sm option-list"
               v-model="group"
@@ -39,27 +49,23 @@
         </q-expansion-item>
       </q-list>
     </div>
+    <div class="row" style="height: 20vh; width: 100%"></div>
   </q-scroll-area>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useSignsStore } from "src/stores/signs";
+import { useMetaStore } from "src/stores/userMeta";
+import { useI18n } from "vue-i18n";
 
-const knowsStatus = ref("");
+const signsStore = useSignsStore();
+const store = useMetaStore();
+
+const selectedSings = ref(signsStore.userSigns);
 
 const group = ref([]);
-const status = ref("yes");
-
-const statusOptions = ref([
-  {
-    label: "Yes",
-    value: "yes",
-  },
-  {
-    label: "No",
-    value: "no",
-  },
-]);
 
 const options = ref([
   { label: "Hypertension", value: "Hypertension", group: "Cardiovascular" },
@@ -137,6 +143,18 @@ const groupedConditions = computed(() => {
     acc[condition.group].push(condition);
     return acc;
   }, {});
+});
+
+function removeChip(index) {
+  group.value.splice(index, 1);
+}
+
+watch(group, (val) => {
+  store.addHealthCondition(val);
+});
+
+onMounted(() => {
+  group.value = store.healthConditions;
 });
 
 const thumbStyle = ref({

@@ -8,7 +8,7 @@ const routes = [
         path: "",
         name: "home",
         component: () => import("pages/home.vue"),
-        meta: { title: "Rusa" },
+        meta: { title: "Rusa", requiresAuth: true },
       },
       {
         path: "/utu",
@@ -49,6 +49,11 @@ const routes = [
         path: "/meta/user",
         name: "meta",
         component: () => import("pages/user/userMeta.vue"),
+      },
+      {
+        path: "/meta/user/update",
+        name: "metaUpdate",
+        component: () => import("pages/user/userMetaUpdate.vue"),
       },
     ],
   },
@@ -111,6 +116,37 @@ const routes = [
         name: "poststory",
         component: () => import("pages/Stories/postStory.vue"),
         meta: { title: "Create story" },
+      },
+      {
+        path: "/readpost",
+        name: "readstory",
+        component: () => import("pages/Stories/readStory.vue"),
+        meta: { title: "Story" },
+      },
+    ],
+  },
+
+  {
+    path: "/Logmeta",
+    component: () => import("layouts/stories.vue"),
+    children: [
+      {
+        path: "/editsigns",
+        name: "editsigns",
+        component: () => import("pages/Journal/editSignList.vue"),
+        meta: { title: "Edit Sign List" },
+      },
+      {
+        path: "/addsign",
+        name: "addsigns",
+        component: () => import("pages/Journal/addSign.vue"),
+        meta: { title: "Add Sign" },
+      },
+      {
+        path: "/lognewsign",
+        name: "logaddedsign",
+        component: () => import("pages/Journal/logAddedSign.vue"),
+        meta: { title: "Add Sign" },
       },
       {
         path: "/readpost",
