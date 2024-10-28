@@ -6,7 +6,7 @@
   </div>
 
   <div class="row q-py-sm q-mb-md" style="width: 100%; min-height: 20vh">
-    <div class="bg-lime-1 q-pa-sm" style="width: 100%; min-height: 100%">
+    <div class="bg-green-1 q-pa-sm" style="width: 100%; min-height: 100%">
       <div
         v-if="selectedTagArray.length === 0"
         class="column items-center justify-center"
@@ -34,8 +34,9 @@
     <div class="q-py-sm" style="width: 100%">
       <q-list class="rounded-borders">
         <q-expansion-item
-          class="header-text text-grey-9"
-          header-class="bg-light-green-1 text-grey-9"
+          class="header-text text-grey-9 q-my-xs"
+          v-model="expandedState[category]"
+          :header-class="getHeaderClass(category)"
           style="font-size: 20px"
           v-for="category in uniqueCategories"
           :key="category"
@@ -64,7 +65,7 @@
                   >
                     <div
                       class="col head-text q-pt-sm self-start"
-                      style="font-size: 20px; font-weight: 700"
+                      style="font-size: 20px; font-weight: 500"
                     >
                       <div
                         class="row text-left"
@@ -97,6 +98,9 @@ const store = storiesStore();
 const router = useRouter();
 const expanded = ref(false);
 const tagsList = ref(store.allTags);
+
+// Track expanded state for each category
+const expandedState = ref({});
 
 // Get unique categories from tagsList
 const uniqueCategories = computed(() => {
@@ -151,6 +155,11 @@ const barStyle = ref({
   width: "9px",
   opacity: 0.2,
 });
+
+// Get dynamic header class for expansion item
+function getHeaderClass(category) {
+  return expandedState.value[category] ? "expanded-header" : "collapsed-header";
+}
 </script>
 
 <style>
@@ -158,7 +167,20 @@ const barStyle = ref({
   color: #74b281;
 }
 
+.expanded-header {
+  background-color: white;
+  color: #404715;
+  font-weight: normal;
+}
+
+.collapsed-header {
+  background-color: #FFCCCC50;
+  color: #1d1d1d;
+  font-weight: normal;
+}
+
 .expansion-header {
+  background-color: #ccccff50;
   font-family: Mulish;
   font-size: 20px;
   font-weight: 500;
