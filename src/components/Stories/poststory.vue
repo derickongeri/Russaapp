@@ -38,8 +38,8 @@
   </div>
 
   <div class="q-py-md" style="width: 100%">
-    <div class="row head-text">Your story</div>
-    <div class="caption-text q-my-sm">Short tile to summarise you story</div>
+    <div class="row head-text q-mb-sm">Your story</div>
+    <!-- <div class="caption-text q-my-sm">Short tile to summarise you story</div> -->
     <q-input
       class="story-box q-px-sm"
       v-model="story.body"
@@ -56,9 +56,7 @@
   </div>
 
   <div class="row head-text q-mt-md">Tags</div>
-  <div class="caption-text q-my-sm">
-    Make it easier to discover your story by adding tags
-  </div>
+  <div class="caption-text q-my-sm">Make it easier to discover your story</div>
 
   <q-btn
     no-caps
@@ -154,8 +152,23 @@
   </q-dialog>
 
   <q-dialog v-model="tagsDialog" :position="position">
-    <div class="q-pa-md bg-white" style="width: 100%; border-radius: 20px">
-      <addTags />
+    <div class="bg-white" style="width: 100%; border-radius: 20px 20px 0px 0px">
+      <div class="q-pa-md bg-white">
+        <addTags />
+      </div>
+      <div class="q-pa-md bg-white" style="">
+        <q-btn
+          no-caps
+          class="tab-text full-width"
+          size="lg"
+          unelevated
+          rounded
+          color="primary"
+          label="Done"
+          @click="tagsDialog = !tagsDialog"
+          style="width: 40%"
+        />
+      </div>
     </div>
   </q-dialog>
 </template>
@@ -256,7 +269,14 @@ const postStory = async () => {
             body: story.value.body,
             story_tags: story.value.tags,
           },
-        ]);
+        ])
+        .then(() => {
+          story.value = {
+            title: "",
+            body: "",
+            tags: [],
+          };
+        });
     } catch (error) {
       console.error("Error in submitting story:", error.message);
     }

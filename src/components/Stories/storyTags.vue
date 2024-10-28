@@ -1,7 +1,19 @@
 <template>
-  <div class="question-text shadow-bottom">My story is about</div>
+  <div class="row q-pb-md items-center">
+    <div class="question-text">My story is about</div>
+    <q-space />
+    <q-btn icon="close" flat round dense v-close-popup />
+  </div>
+
   <div class="row q-py-sm q-mb-md" style="width: 100%; min-height: 20vh">
     <div class="bg-lime-1 q-pa-sm" style="width: 100%; min-height: 100%">
+      <div
+        v-if="selectedTagArray.length === 0"
+        class="column items-center justify-center"
+        style="min-height: 100%"
+      >
+        Nothing selected
+      </div>
       <q-chip
         size="lg"
         outline
@@ -17,12 +29,13 @@
   <q-scroll-area
     :thumb-style="thumbStyle"
     :bar-style="barStyle"
-    style="height: 65vh; min-width: 100%"
+    style="height: 40vh; min-width: 100%"
   >
     <div class="q-py-sm" style="width: 100%">
       <q-list class="rounded-borders">
         <q-expansion-item
           class="header-text text-grey-9"
+          header-class="bg-light-green-1 text-grey-9"
           style="font-size: 20px"
           v-for="category in uniqueCategories"
           :key="category"
