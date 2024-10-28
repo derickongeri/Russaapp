@@ -66,7 +66,7 @@
             label="SKIP"
             color=""
             text-color="black"
-            @click="completeOnboarding(true)"
+            @click="completeOnboarding('true')"
           />
 
           <q-btn
@@ -89,7 +89,7 @@
             label="GET STARTED"
             color="primary"
             text-color="white"
-            @click="completeOnboarding(true)"
+            @click="completeOnboarding('true')"
           />
         </div>
       </q-carousel-control>
@@ -98,16 +98,17 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useQuasar } from "quasar";
 import { setUserOnboarded } from "src/utils/onboarding";
 import { useRouter } from "vue-router";
+//import { setUserOnboarded } from "src/utils/onboarding";
 
 const router = useRouter();
 
 const $q = useQuasar();
 
-const emit = defineEmits(['completeOnboarding']);
+const emit = defineEmits(["completeOnboarding"]);
 
 const navPos = ref("bottom"),
   padding = ref(true),
@@ -116,15 +117,33 @@ const navPos = ref("bottom"),
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatem totam, architecto cupiditate officia rerum, error dignissimos praesentium libero ab nemo."
   );
 
+const onboarded = ref($q.localStorage.getItem("userOnboarded") === "true");
+
 const completeOnboarding = (val) => {
-  $q.localStorage.set("userOnboarded", val);
-  // Emit the complete event
-  // emit('completeOnboarding', val);
-  router.push({
-    path: "/auth",
-  });
-  console.log("pushing to new route")
+  $q.localStorage.setItem("userOnboarded", val);
+  onboarded.value = val; // Directly manage the onboarded state
+
+  // Emit event if needed
+  emit("completeOnboarding", val);
+
+  // Navigate to auth page
+  router.push({ name: "auth" });
+  console.log("Navigating to auth route");
 };
+
+function setOnboarded(value) {
+  $q.localStorage.setItem("userOnboarded", value);
+  const event = new Event("storage");
+  event.key = "userOnboarded";
+  event.newValue = value;
+  window.dispatchEvent(event);
+}
+
+window.addEventListener("storage", (event) => {
+  if (event.key === "userOnboarded") {
+    onboarded.value = event.newValue === "true";
+  }
+});
 </script>
 
 <style lang="scss">

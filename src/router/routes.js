@@ -1,4 +1,3 @@
-
 const routes = [
   {
     path: "/",
@@ -30,7 +29,17 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/onboarding",
+    component: () => import("layouts/onBoardingLayout.vue"),
+    children: [
+      {
+        path: "/onboard",
+        name: "onboard",
+        component: () => import("pages/user/onboarding.vue"),
+      },
+    ],
+  },
   {
     path: "/User",
     component: () => import("layouts/onBoardingLayout.vue"),
@@ -165,4 +174,4 @@ const routes = [
   },
 ];
 
-export default routes
+export default routes;

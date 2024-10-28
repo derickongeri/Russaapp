@@ -45,7 +45,7 @@
               align="between"
             >
               <div class="column items-start justify-left">
-                <div class="" style="font-size: 1.75em">Nzisa</div>
+                <div class="" style="font-size: 1.75em">{{ username }}</div>
                 <div class="text-grey-7 text-caption" style="font-size: 1em">
                   Account Profile
                 </div>
@@ -56,12 +56,14 @@
       </div>
       <div class="q-pa-md" style="max-width: 350px; margin-top: 150px">
         <q-list v-for="(link, index) in drawerLinks" :key="index">
-          <q-separator class="bg-green-1 q-mx-md"/>
+          <q-separator class="bg-green-1 q-mx-md" />
           <q-item class="q-my-sm" clickable :to="link.toPage">
             <q-item-section>
-              <q-item-label class="text-primary text-weight-bold head-text" :style="{ fontSize: '1.5em' }">{{
-                link.name
-              }}</q-item-label>
+              <q-item-label
+                class="text-primary text-weight-bold head-text"
+                :style="{ fontSize: '1.5em' }"
+                >{{ link.name }}</q-item-label
+              >
               <q-item-label v-if="link.caption" caption>{{
                 link.caption
               }}</q-item-label>
@@ -79,7 +81,9 @@
           style="position: absolute; bottom: 0%; min-width: 80%"
         >
           <div class="column items-start justify-left">
-            <div class="text-weight-bold text-primary" style="font-size: 2.5em">Rusa</div>
+            <div class="text-weight-bold text-primary" style="font-size: 2.5em">
+              Rusa
+            </div>
             <div class="text-grey-7">by</div>
             <div class="text-grey-7 q-mt-sm">Version 1.0.0 (244)</div>
           </div>
@@ -88,10 +92,10 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page v-if="!onboarduser" class="flex flex-center">
+      <!-- <q-page v-if="!onboarduser" class="flex flex-center">
         <onboarding />
-      </q-page>
-      <router-view v-else />
+      </q-page> -->
+      <router-view />
     </q-page-container>
 
     <q-footer v-if="onboarduser" bordered class="main-footer">
@@ -144,12 +148,14 @@ import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { isUserOnboarded } from "src/utils/onboarding";
 import onboarding from "src/components/Reusables/onboarding.vue";
+import userAuthUser from "src/composables/userAuthUser";
+
+const { user } = userAuthUser();
 
 const $q = useQuasar();
 
 const route = useRoute();
 
-const onboarded = ref($q.localStorage.getItem("userOnboarded") === "true");
 const leftDrawerOpen = ref(false);
 
 const toggleLeftDrawer = () => {
@@ -183,6 +189,10 @@ const onboarduser = computed(() => {
   return $q.localStorage.getItem("userOnboarded");
 });
 
+const username = computed(() => {
+  return user.value.user_metadata.firstName
+});
+
 // Computed property to get the title from the current route meta
 const currentRouteTitle = computed(() => {
   return route.meta.title || "Default Title";
@@ -191,26 +201,4 @@ const currentRouteTitle = computed(() => {
 const getIcon = (to, filledIcon, outlinedIcon) => {
   return route.path === to ? filledIcon : outlinedIcon;
 };
-
-function completeOnboarding() {
-  setOnboarded(true);
-}
-
-function setOnboarded(value) {
-  $q.localStorage.set("userOnboarded", value);
-  const event = new Event("storage");
-  event.key = "userOnboarded";
-  event.newValue = value;
-  window.dispatchEvent(event);
-}
-
-window.addEventListener("storage", (event) => {
-  if (event.key === "userOnboarded") {
-    onboarded.value = event.newValue === "true";
-  }
-});
-
-onMounted(() => {
-  console.log("User onboard", onboarded.value);
-});
 </script>

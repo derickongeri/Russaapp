@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-none">
     <div class="row q-pt-md q-px-md q-my-md head-text" style="width: 100%">
-      Welcome back, Nzisa
+      Welcome back, {{ username }}
     </div>
 
     <!-- <div class="q-pa-md q-my-lg header-div" id="quick-actions">
@@ -355,12 +355,18 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, computed } from "vue";
 import carouselContent from "src/components/homepage/carousel.vue";
+import userAuthUser from "src/composables/userAuthUser";
 import stories from "src/components/Reusables/storiesSlides.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+const { user } = userAuthUser();
+const username = computed(() => {
+  return user.value.user_metadata.firstName
+});
 
 const journalList = ref([
   {

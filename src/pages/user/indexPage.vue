@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import signUpForm from "src/components/Forms/signUp.vue";
 import loginForm from "src/components/Forms/login.vue";
 
@@ -116,4 +116,5 @@ const signup = ref(false),
   text = ref(""),
   password = ref(""),
   isPwd = ref(true);
+  
 </script>

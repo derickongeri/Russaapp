@@ -144,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useSignsStore } from "src/stores/signs";
 import { useI18n } from "vue-i18n";
@@ -197,7 +197,11 @@ const isSelected = (sign) => selectedSings.value.includes(sign);
 
 watch(selectedSings, (val) => {
   signsStore.addSignsToUserSigns(selectedSings.value);
-},{deep: true});
+}, { deep: true });
+
+onMounted(() => {
+  selectedSings.value = signsStore.userSigns
+})
 
 const thumbStyle = ref({
     right: "4px",

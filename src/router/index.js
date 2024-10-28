@@ -8,6 +8,8 @@ import {
 import routes from "./routes";
 import userAuthUser from "src/composables/userAuthUser";
 import { setStatusBarColor } from "src/boot/statusBar.js";
+import { ref } from "vue";
+import { useQuasar } from "quasar";
 
 /*
  * If not building with SSR mode, you can
@@ -38,14 +40,25 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to) => {
+    const $q = useQuasar();
     const { isLoggedIn } = userAuthUser();
+    const onboarded = $q.localStorage.getItem("userOnboarded") === "true";
 
+    console.log(onboarded);
+
+    // If the user has not been onboarded, redirect to the onboard page
+    if (!onboarded && to.name !== "onboard") {
+      return { name: "onboard" };
+    }
+
+    // Now check if the user is logged in if onboarding is complete
     if (
       !isLoggedIn() &&
       to.meta.requiresAuth &&
       !Object.keys(to.query).includes("fromEmail") &&
-      to.name === "home"
+      to.name !== "auth"
     ) {
+      // Redirect to the login/auth page if the user is not logged in
       return { name: "auth" };
     }
   });

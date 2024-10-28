@@ -44,6 +44,11 @@ const currentRouteTitle = computed(() => {
   return route.meta.title || "Default Title";
 });
 
+function goBack() {
+  // Navigate back in the browser history
+  router.go(-1);
+}
+
 
 </script>
 

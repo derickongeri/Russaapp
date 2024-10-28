@@ -5,5 +5,5 @@ export function isUserOnboarded() {
 }
 
 export function setUserOnboarded(val) {
-  LocalStorage.set("userOnboarded", val);
+  LocalStorage.setItem("userOnboarded", val);
 }
