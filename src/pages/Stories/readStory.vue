@@ -67,9 +67,8 @@
         <q-space />
         <q-btn
           no-caps
-          rounded
-          outline
-          size="sm"
+          flat
+          size=""
           color="primary"
           @click="openReportStoryDialog('bottom')"
         >
@@ -89,12 +88,12 @@
         <q-btn
           no-caps
           flat
-          size="sm"
+          size=""
           color="primary"
           @click="openGuidelinesDialog('bottom')"
         >
           <div class="q-px-sm">Community guidelines</div>
-          <q-icon size="xs" name="mdi-help-circle-outline" color="primary" />
+          <q-icon size="" name="mdi-help-circle-outline" color="primary" />
         </q-btn>
       </div>
 
