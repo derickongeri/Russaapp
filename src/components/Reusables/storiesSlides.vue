@@ -1,5 +1,13 @@
 <template>
-  <div class="row q-px-md q-my-md head-text" style="width: 100%">Stories</div>
+  <div class="row row q-pl-md q-my-md justify-between" style="width: 100%">
+    <div class="head-text">Stories</div>
+    <q-space></q-space>
+
+    <q-btn no-caps flat size="md" color="primary" @click="goTo('stories')">
+      <div class="q-px-sm">View all</div>
+      <q-icon size="xs" name="mdi-open-in-new" color="primary" />
+    </q-btn>
+  </div>
 
   <div class="horizontal-content q-my-lg">
     <q-scroll-area
@@ -45,9 +53,22 @@
 <script setup>
 import { defineComponent, ref, watch } from "vue";
 
+import { useRouter } from "vue-router";
+import useSupabase from "src/boot/supabase";
+
+const router = useRouter();
+
+const { supabase } = useSupabase();
+
 const lorem = ref(
   "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatem totam, architecto cupiditate officia rerum, error dignissimos praesentium libero ab nemo."
 );
+
+function goTo(val) {
+  router.push({
+    name: val,
+  });
+}
 
 const thumbStyle = ref({
     right: "4px",

@@ -121,6 +121,12 @@ const routes = [
     component: () => import("layouts/stories.vue"),
     children: [
       {
+        path: "/stories",
+        name: "stories",
+        component: () => import("pages/Stories/allstories.vue"),
+        meta: { title: "Stories" },
+      },
+      {
         path: "/createpost",
         name: "poststory",
         component: () => import("pages/Stories/postStory.vue"),

@@ -178,7 +178,10 @@ import { ref, watch, computed } from "vue";
 import userAuthUser from "src/composables/userAuthUser";
 import addTags from "src/components/Stories/storyTags.vue";
 import { storiesStore } from "src/stores/stories";
+import { useRouter } from "vue-router";
 import useSupabase from "src/boot/supabase";
+
+const router = useRouter();
 
 const { supabase } = useSupabase();
 
@@ -259,7 +262,7 @@ watch(selectedTags, (val) => {
 const postStory = async () => {
   if (isStoryValid.value) {
     try {
-      const { error: insertError } = await supabase
+      const { data, error: insertError } = await supabase
         .from("user_stories")
         .insert([
           {
@@ -270,13 +273,26 @@ const postStory = async () => {
             story_tags: story.value.tags,
           },
         ])
-        .then(() => {
-          story.value = {
-            title: "",
-            body: "",
-            tags: [],
-          };
+        .select(); // This retrieves the inserted data
+
+      if (insertError) throw insertError;
+
+      // Clear the form values
+      story.value = {
+        title: "",
+        body: "",
+        tags: [],
+      };
+      selectedTag.value = [];
+
+      // Redirect to the story view page with the newly inserted story's ID
+      if (data && data.length > 0) {
+        console.log(data)
+        router.push({
+          name: "readstory",
+          query: { id: data[0].story_id },
         });
+      }
     } catch (error) {
       console.error("Error in submitting story:", error.message);
     }
