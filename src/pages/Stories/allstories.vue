@@ -15,7 +15,7 @@
           <q-card
             v-for="story in stories"
             :key="story.id"
-            class="story-item q-mb-lg bg-grey-1"
+            class="story-item q-mb-lg bg-white"
             clickable
             @click="goToStory(story.story_id)"
             flat
@@ -32,9 +32,9 @@
               >
                 {{ story.user_name }}
               </div>
-              <q-space/>
+              <q-space />
               <div class="caption-text q-px-md" style="font-style: italic">
-               {{ formatTime(story.created_at) }}
+                {{ formatTime(story.created_at) }}
               </div>
             </div>
 
@@ -56,14 +56,32 @@
               }}
             </div>
 
-            <q-btn
+            <div class="row q-my-md items-center" style="font-size: 16px">
+              <div class="caption-text q-mr-md">
+                <i class="fa-regular fa-eye"></i> <b>{{ story.views }}</b>
+              </div>
+              <div class="caption-text">
+                <i class="fa-regular fa-message"></i>
+                <b>{{ ` ${story.comments}` }}</b>
+              </div>
+              <q-space />
+              <q-btn
+                no-caps
+                flat
+                color="primary"
+                @click="goToStory(story.story_id)"
+                label="View story"
+                icon-right="mdi-open-in-new"
+              />
+            </div>
+            <!-- <q-btn
               no-caps
               outline
               color="primary"
               @click="goToStory(story.story_id)"
               label="Read More"
               class="q-mt-sm"
-            />
+            /> -->
           </q-card>
         </div>
 
@@ -75,7 +93,7 @@
     <q-spinner-hearts size="50px" color="primary" />
   </q-inner-loading>
   <q-page-sticky v-if="!visible" position="bottom-right" :offset="[18, 18]">
-    <q-btn fab icon="add" color="primary" />
+    <q-btn fab icon="add" color="primary" to="/createpost" />
   </q-page-sticky>
 </template>
 
