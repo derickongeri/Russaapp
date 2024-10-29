@@ -2,7 +2,8 @@
   <q-scroll-area
     :thumb-style="thumbStyle"
     :bar-style="barStyle"
-    style="height: 90vh; min-width: 100%"
+    style="height: 94vh; min-width: 100%"
+    class="stories-container"
   >
     <div class="q-pa-md" style="width: 100vw">
       <transition
@@ -11,31 +12,35 @@
         leave-active-class="animated fadeOut"
       >
         <div v-if="stories.length > 0" class="story-list">
-          <div
+          <q-card
             v-for="story in stories"
             :key="story.id"
-            class="story-item q-mb-lg"
+            class="story-item q-mb-lg bg-grey-1"
+            clickable
+            @click="goToStory(story.story_id)"
+            flat
+            bordered
           >
             <div class="row items-center">
               <q-avatar size="40px" color="green-2" text-color="white">{{
                 story.user_name.charAt(0) || "A"
               }}</q-avatar>
-              <div class="column q-gutter-y-sm">
-                <div
-                  class="row q-px-md header-text text-primary"
-                  style="font-size: 20px"
-                >
-                  {{ story.user_name }}
-                </div>
-                <div class="caption-text q-px-md" style="font-style: italic">
-                  {{ formatTime(story.created_at) }}
-                </div>
+
+              <div
+                class="row q-px-md header-text text-primary"
+                style="font-size: 20px"
+              >
+                {{ story.user_name }}
+              </div>
+              <q-space/>
+              <div class="caption-text q-px-md" style="font-style: italic">
+               {{ formatTime(story.created_at) }}
               </div>
             </div>
 
             <div
-              class="story-title q-py-md text-primary"
-              style="font-size: 24px; font-weight: bold"
+              class="story-title q-pt-md text-primary"
+              style="font-size: 20px; font-weight: normal"
             >
               {{ story.title }}
             </div>
@@ -52,13 +57,14 @@
             </div>
 
             <q-btn
-              flat
+              no-caps
+              outline
               color="primary"
               @click="goToStory(story.story_id)"
               label="Read More"
               class="q-mt-sm"
             />
-          </div>
+          </q-card>
         </div>
 
         <div v-else class="text-center text-grey-7">No stories posted yet.</div>
@@ -66,12 +72,11 @@
     </div>
   </q-scroll-area>
   <q-inner-loading class="bg-white" :showing="visible">
-    <q-spinner-hearts
-      size="50px"
-      color="primary"
-    />
-
+    <q-spinner-hearts size="50px" color="primary" />
   </q-inner-loading>
+  <q-page-sticky v-if="!visible" position="bottom-right" :offset="[18, 18]">
+    <q-btn fab icon="add" color="primary" />
+  </q-page-sticky>
 </template>
 
 <script setup>
@@ -135,6 +140,21 @@ const formatTime = (createdAt) => {
 const goToStory = (id) => {
   router.push({ name: "readstory", query: { id } });
 };
+
+const thumbStyle = ref({
+    right: "4px",
+    borderRadius: "5px",
+    backgroundColor: "#027be300",
+    width: "5px",
+    opacity: 0.75,
+  }),
+  barStyle = ref({
+    right: "2px",
+    borderRadius: "9px",
+    backgroundColor: "#027be300",
+    width: "9px",
+    opacity: 0.2,
+  });
 </script>
 
 <style scoped>
@@ -156,5 +176,19 @@ const goToStory = (id) => {
 
 .story-body-preview {
   color: #333;
+}
+
+.stories-container {
+  flex-grow: 0;
+  padding: 0 0 0px;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.219),
+      rgba(0, 0, 0, 0.35)
+    ),
+    /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
+      url("~/src/assets/storiesbackground.jpg");
+  background-size: cover;
+  background-position: center;
 }
 </style>
