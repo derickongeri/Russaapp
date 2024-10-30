@@ -256,7 +256,7 @@
             v-model="newComment"
             dense
             autogrow
-            borderless
+            
             placeholder="Add a comment"
             @focus="addComment('show', false)"
             @blur="addComment('hide', false)"
