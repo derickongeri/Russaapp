@@ -2,7 +2,7 @@
   <div
     v-if="!visible"
     class="stories-container-bg"
-    style="min-height: 96vh; width: 100vw"
+    style="min-height: 100vh; width: 100vw"
   >
     <q-scroll-area
       :thumb-style="thumbStyle"
@@ -241,25 +241,23 @@
     </q-scroll-area>
 
     <div
-      class="q-px-sm"
-      style="
-        position: fixed;
-        bottom: 0%;
-        width: 100%;
-        border-radius: 20px 20px 0px 0px;
-      "
+      class="q-px-sm comment-box"
+      :style="{backgroundColor: commentBoxBackground}"
     >
+      <div v-if="visibleKeybord" class="row q-px-md q-pt-sm caption-text" style="width: 100%; font-size:small">
+        Replying to @{{ storyData?.user_name || "Username" }}
+      </div>
       <div class="row q-py-md header-text text-primary" style="width: 100%">
         <div class="story-box bg-white col q-mr-sm items-center">
           <q-input
             ref="input"
-            class="col-10 header-text q-pl-md"
-            style="font-size: 16px; line-height: 1.5em"
+            class="col-10 header-text q-px-md"
+            style="font-size: 16px; line-height: 1.5em;max-height: 48px;"
             v-model="newComment"
             dense
+            autogrow
             borderless
             placeholder="Add a comment"
-            autogrow
             @focus="addComment('show', false)"
             @blur="addComment('hide', false)"
           />
@@ -477,7 +475,13 @@ const storyId = route.query.id;
 
 const visibleKeybord = ref(false);
 // Define computed height based on the isExpanded value
-const scrollAreaHeight = computed(() => (visibleKeybord.value ? '50vh' : '83vh'));
+const scrollAreaHeight = computed(() =>
+  visibleKeybord.value ? "50vh" : "83vh"
+);
+
+const commentBoxBackground = computed(() =>
+  visibleKeybord.value ? "white" : "transparent"
+);
 
 const input = ref(null);
 const newComment = ref("");
@@ -724,7 +728,7 @@ const thumbStyle = ref({
 
 <style>
 .story-box {
-  border: solid 1px green;
+  /* border: solid 1px green; */
   border-radius: 28px;
 }
 
@@ -749,6 +753,13 @@ const thumbStyle = ref({
   top: 0%;
   border-radius: 0px;
   rotate: 180deg;
+}
+
+.comment-box {
+  position: fixed;
+  bottom: 0%;
+  width: 100%;
+  border-radius: 0px;
 }
 
 .triangle-0 {
