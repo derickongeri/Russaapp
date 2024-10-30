@@ -1,86 +1,103 @@
 <template>
-  <div v-if="!visible" class="bg-grey-2" style="min-height: 90vh">
-    <div class="q-px-md q-pt-md" style="width: 100vw">
-      <div class="row items-center">
-        <q-avatar size="40px" color="green-2" text-color="white">{{
-          storyData?.user_name.charAt(0) || "A"
-        }}</q-avatar>
-        <div class="column q-gutter-y-sm">
-          <div
-            class="row q-px-md header-text text-primary"
-            style="font-size: 20px"
+  <div v-if="!visible" class="stories-container-bg" style="min-height: 90vh; width: 100vw">
+    <div>
+      <div class="row q-pt-sm q-mb-sm" style="width: 100%"></div>
+      <div class="q-px-md bg-white q-mx-sm q-pt-sm" style="border-radius: 10px">
+        <div class="row items-center">
+          <q-avatar size="40px" color="green-2" text-color="white">{{
+            storyData?.user_name.charAt(0) || "A"
+          }}</q-avatar>
+          <div class="column q-gutter-y-sm">
+            <div
+              class="row q-px-md header-text text-primary"
+              style="font-size: 20px"
+            >
+              {{ storyData?.user_name || "Username" }}
+            </div>
+            <div class="caption-text q-px-md" style="font-style: italic">
+              {{ formattedTime }}
+            </div>
+          </div>
+          <q-space />
+
+          <div></div>
+        </div>
+
+        <div
+          class="q-py-md header-text text-primary"
+          style="width: 100%; line-height: 1.2em"
+        >
+          {{
+            storyData?.title || "A journey through menopause: Embracing Change"
+          }}
+        </div>
+
+        <div
+          class="q-py-md header-text text-grey-9"
+          style="
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 1.5em;
+            width: 100%;
+          "
+        >
+          {{ storyData?.body || "Story content goes here..." }}
+        </div>
+
+        <div
+          class="q-pt-md header-text text-grey-9"
+          style="font-size: 20px; font-weight: 300; width: 100%"
+        >
+          <q-chip
+            size="md"
+            outline
+            color="grey-7"
+            v-for="(tag, index) in storyData?.story_tags || []"
+            :key="index"
           >
-            {{ storyData?.user_name || "Username" }}
+            {{ tag.label }}
+          </q-chip>
+        </div>
+        <q-separator class="q-mt-md"></q-separator>
+        <div class="row q-my-sm items-center" style="font-size: 16px">
+          <div class="caption-text q-mr-md">
+            <b>{{ storyData?.views }}</b> Views
           </div>
-          <div class="caption-text q-px-md" style="font-style: italic">
-            {{ formattedTime }}
+          <div class="caption-text">
+            <b>{{ storyData?.comments }}</b> Comments
           </div>
+          <q-space />
+          <q-btn
+            v-if="storyData?.user_email === user.email"
+            no-caps
+            flat
+            size=""
+            color="primary"
+            @click="OpenDeleteItemDialog('story')"
+          >
+            <div class="q-px-sm">Delete story</div>
+            <q-icon size="xs" name="mdi-delete-alert-outline" color="primary" />
+          </q-btn>
+          <q-btn
+            v-else
+            no-caps
+            flat
+            size=""
+            color="primary"
+            @click="openDialog('bottom', 'story')"
+          >
+            <div class="q-px-sm">Report this story</div>
+            <q-icon size="xs" name="mdi-alert-outline" color="primary" />
+          </q-btn>
         </div>
-        <q-space />
-
-        <div></div>
       </div>
-
-      <div
-        class="q-py-md header-text text-primary"
-        style="width: 100%; line-height: 1.2em"
-      >
-        {{
-          storyData?.title || "A journey through menopause: Embracing Change"
-        }}
-      </div>
-
-      <div
-        class="q-py-md header-text text-grey-9"
-        style="
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1.5em;
-          width: 100%;
-        "
-      >
-        {{ storyData?.body || "Story content goes here..." }}
-      </div>
-
-      <div
-        class="q-pt-md header-text text-grey-9"
-        style="font-size: 20px; font-weight: 300; width: 100%"
-      >
-        <q-chip
-          size="md"
-          outline
-          color="grey-7"
-          v-for="(tag, index) in storyData?.story_tags || []"
-          :key="index"
-        >
-          {{ tag.label }}
-        </q-chip>
-      </div>
-      <q-separator class="q-mt-md"></q-separator>
-      <div class="row q-my-sm items-center" style="font-size: 16px">
-        <div class="caption-text q-mr-md">
-          <b>{{ storyData?.views }}</b> Views
-        </div>
-        <div class="caption-text">
-          <b>{{ storyData?.comments }}</b> Comments
-        </div>
-        <q-space />
-        <q-btn
-          no-caps
-          flat
-          size=""
-          color="primary"
-          @click="openReportStoryDialog('bottom')"
-        >
-          <div class="q-px-sm">Report this story</div>
-          <q-icon size="xs" name="mdi-alert-outline" color="primary" />
-        </q-btn>
-      </div>
-      <q-separator class=""></q-separator>
     </div>
 
     <div class="comment-section q-pt-sm">
-      <div class="row q-px-md q-my-sm items-center">
+      <div
+        class="row bg-white q-mx-sm q-px-md q-py-sm items-center"
+        style="border-radius: 10px"
+      >
         <div class="header-text text-primary" style="font-size: 20px">
           Comments
         </div>
@@ -90,7 +107,7 @@
           flat
           size=""
           color="primary"
-          @click="openGuidelinesDialog('bottom')"
+          @click="openDialog('bottom', 'guidelines')"
         >
           <div class="q-px-sm">Community guidelines</div>
           <q-icon size="" name="mdi-help-circle-outline" color="primary" />
@@ -99,64 +116,96 @@
 
       <div v-if="showComments" class="">
         <q-list v-for="comment in comments" :key="comment.id">
-          <q-card
-            flat
-            class="q-ma-md q-pt-md bg-white"
-            style="border-radius: 10px"
-          >
-            <q-item>
-              <q-item-section top avatar>
-                <q-avatar color="primary" text-color="white" icon="bluetooth" />
-              </q-item-section>
-              <q-item-section>
-                <div class="row items-center">
-                  <div
-                    class="header-text text-primary"
-                    style="font-size: 16px; font-weight: normal"
-                  >
-                    {{ comment.owner.firstName }} {{ comment.owner.lastName }}
-                  </div>
-                  <q-space />
-                  <div
-                    class="caption-text"
-                    style="font-style: italic; font-size: 16px"
-                  >
-                    {{ formatTime(comment.created_at) }}
-                  </div>
-                </div>
+          <div class="row">
+            <div class="col-1">
+              <q-item class="q-pt-lg">
+                <q-item-section top avatar>
+                  <q-avatar size="sm" color="primary" text-color="white">{{
+                    comment.owner.firstName.charAt(0) || "A"
+                  }}</q-avatar>
+                </q-item-section>
+              </q-item>
+            </div>
+            <div class="col">
+              <q-card
+                flat
+                class="q-ma-md q-pt-xs bg-white"
+                style="border-radius: 0px 20px 20px 20px"
+              >
+                <q-item>
+                  <div class="triangle triangle-0"></div>
+                  <q-item-section>
+                    <div class="row items-center">
+                      <div
+                        class="header-text text-primary"
+                        style="font-size: 16px; font-weight: normal"
+                      >
+                        {{ comment.owner.firstName }}
+                        {{ comment.owner.lastName }}
+                      </div>
+                      <q-space />
+                      <div
+                        class="caption-text"
+                        style="font-style: italic; font-size: 16px"
+                      >
+                        {{ formatTime(comment.created_at) }}
+                      </div>
+                    </div>
 
-                <div
-                  class="q-py-md header-text text-grey-9"
-                  style="
-                    font-size: 20px;
-                    font-weight: 300;
-                    line-height: 1.5em;
-                    width: 100%;
-                  "
-                >
-                  {{ comment.comment_text }}
-                </div>
+                    <div
+                      class="q-py-md header-text text-grey-9"
+                      style="
+                        font-size: 20px;
+                        font-weight: 300;
+                        line-height: 1.5em;
+                        width: 100%;
+                      "
+                    >
+                      {{ comment.comment_text }}
+                    </div>
 
-                <div class="row items-center" style="font-size: 16px">
-                  <q-space />
-                  <q-btn
-                    no-caps
-                    flat
-                    size=""
-                    color="primary"
-                    @click="openReportCommentDialog('bottom', comment.comment_id)"
-                  >
-                    <div class="q-px-sm">Report comment</div>
-                    <q-icon
-                      size="xs"
-                      name="mdi-chat-alert-outline"
-                      color="primary"
-                    />
-                  </q-btn>
-                </div>
-              </q-item-section>
-            </q-item>
-          </q-card>
+                    <div class="row items-center" style="font-size: 16px">
+                      <q-space />
+                      <q-btn
+                        v-if="storyData?.user_email === user.email"
+                        no-caps
+                        flat
+                        size=""
+                        color="primary"
+                        @click="
+                          OpenDeleteItemDialog('comment', comment.comment_id)
+                        "
+                      >
+                        <div class="q-px-sm">Delete comment</div>
+                        <q-icon
+                          size="xs"
+                          name="mdi-delete-alert-outline"
+                          color="primary"
+                        />
+                      </q-btn>
+                      <q-btn
+                        v-else
+                        no-caps
+                        flat
+                        size=""
+                        color="primary"
+                        @click="
+                          openDialog('bottom', 'comment', comment.comment_id)
+                        "
+                      >
+                        <div class="q-px-sm">Report comment</div>
+                        <q-icon
+                          size="xs"
+                          name="mdi-chat-alert-outline"
+                          color="primary"
+                        />
+                      </q-btn>
+                    </div>
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+          </div>
         </q-list>
         <div class="row" style="width: 100%; min-height: 10vh"></div>
       </div>
@@ -184,9 +233,8 @@
               borderless
               placeholder="Add comment"
               autogrow
-              dense
-              @focus="visibleKeybord = true"
-              @blur="visibleKeybord = false"
+              @focus="addComment('show', false)"
+              @blur="addComment('hide', false)"
             />
             <div class="col-2 column justify-around items-center">
               <q-btn
@@ -194,7 +242,7 @@
                 round
                 color="primary"
                 icon="mdi-send"
-                @click="addComment"
+                @click="addComment('hide', true)"
               />
             </div>
           </div>
@@ -213,82 +261,14 @@
     transition-show="slide-left"
     transition-hide="slide-right"
     :maximaized="true"
-    v-model="guidelinesDialog"
+    v-model="dialogOpen"
     backdrop-filter="blur(8px) saturate(150%)"
   >
-    <div class="bg-white q-pa-md" style="width: 100%; border-radius: 20px">
-      <div class="q-pa-md bg-white">
-        <P>
-          Plese note - we are here to support each other so any negative
-          comments will be reported and you may be blocked from using the
-          platform.
-        </P>
-        <p>
-          Whilst RUSA is created by experts, we're not here to give medical
-          advice. Any post offering medical adivce will be deleted.
-        </p>
-        <q-btn
-          no-caps
-          class="tab-text q-mt-md full-width"
-          size="lg"
-          unelevated
-          rounded
-          color="primary"
-          label="Okay, got it"
-          @click="guidelinesDialog = !guidelinesDialog"
-          style="width: 40%"
-        />
-      </div>
-    </div>
-  </q-dialog>
-
-  <q-dialog
-    transition-show="slide-left"
-    transition-hide="slide-right"
-    :maximaized="true"
-    v-model="reportStoryDialog"
-    backdrop-filter="blur(8px) saturate(150%)"
-  >
-    <div class="bg-white q-pa-md" style="width: 100%; border-radius: 20px">
-      <div class="q-pa-md bg-white">
-        <P> Does this story: </P>
-        <p>Contain negative or abusive language?</p>
-        <p>Offer medical advice?</p>
-        <p>Contain product endorsements or inappropriate recommendations?</p>
-        <q-btn
-          no-caps
-          class="tab-text q-mt-md full-width"
-          size="lg"
-          unelevated
-          rounded
-          color="primary"
-          label="Yes, report the story"
-          @click="reportStory"
-          style="width: 40%"
-        />
-        <q-btn
-          no-caps
-          class="tab-text q-mt-md full-width"
-          size="lg"
-          outline
-          rounded
-          color="primary"
-          label="No, cancel"
-          @click="reportStoryDialog = !reportStoryDialog"
-          style="width: 40%"
-        />
-      </div>
-    </div>
-  </q-dialog>
-
-  <q-dialog
-    transition-show="slide-left"
-    transition-hide="slide-right"
-    :maximaized="true"
-    v-model="reportCommentDialog"
-    backdrop-filter="blur(8px) saturate(150%)"
-  >
-    <div class="bg-white q-pa-md" style="width: 100%; border-radius: 20px">
+    <div
+      v-if="reportCommentDialog"
+      class="bg-white q-pa-md"
+      style="width: 100%; border-radius: 20px"
+    >
       <div class="q-pa-md bg-white">
         <P> Does this Comment: </P>
         <p>Contain negative or abusive language?</p>
@@ -313,11 +293,123 @@
           rounded
           color="primary"
           label="No, cancel"
-          @click="reportCommentDialog = !reportCommentDialog"
+          @click="
+            (dialogOpen = !dialogOpen),
+              (reportCommentDialog = !reportCommentDialog)
+          "
           style="width: 40%"
         />
       </div>
     </div>
+    <div
+      v-if="guidelinesDialog"
+      class="bg-white q-pa-md"
+      style="width: 100%; border-radius: 20px"
+    >
+      <div class="q-pa-md bg-white">
+        <P>
+          Plese note - we are here to support each other so any negative
+          comments will be reported and you may be blocked from using the
+          platform.
+        </P>
+        <p>
+          Whilst RUSA is created by experts, we're not here to give medical
+          advice. Any post offering medical adivce will be deleted.
+        </p>
+        <q-btn
+          no-caps
+          class="tab-text q-mt-md full-width"
+          size="lg"
+          unelevated
+          rounded
+          color="primary"
+          label="Okay, got it"
+          @click="
+            (dialogOpen = !dialogOpen), (guidelinesDialog = !guidelinesDialog)
+          "
+          style="width: 40%"
+        />
+      </div>
+    </div>
+    <div
+      v-if="reportStoryDialog"
+      class="bg-white q-pa-md"
+      style="width: 100%; border-radius: 20px"
+    >
+      <div class="q-pa-md bg-white">
+        <P> Does this story: </P>
+        <p>Contain negative or abusive language?</p>
+        <p>Offer medical advice?</p>
+        <p>Contain product endorsements or inappropriate recommendations?</p>
+        <q-btn
+          no-caps
+          class="tab-text q-mt-md full-width"
+          size="lg"
+          unelevated
+          rounded
+          color="primary"
+          label="Yes, report the story"
+          @click="reportStory"
+          style="width: 40%"
+        />
+        <q-btn
+          no-caps
+          class="tab-text q-mt-md full-width"
+          size="lg"
+          outline
+          rounded
+          color="primary"
+          label="No, cancel"
+          @click="
+            (dialogOpen = !dialogOpen), (reportStoryDialog = !reportStoryDialog)
+          "
+          style="width: 40%"
+        />
+      </div>
+    </div>
+  </q-dialog>
+
+  <q-dialog v-model="confirm" persistent>
+    <q-card v-if="deleteStoryDialog">
+      <q-card-section class="">
+        <p class="q-ml-sm" style="font-weight: bold">Are you sure?</p>
+        <span class="q-ml-sm"
+          >Are you sure you want to deleting your story?</span
+        >
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn
+          flat
+          label="Ok"
+          color="primary"
+          @click="deleteStory(storyId)"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+
+    <q-card v-if="deleteCommetDialog">
+      <q-card-section class="">
+        <p class="q-ml-sm" style="font-weight: bold">Are you sure?</p>
+        <span class="q-ml-sm"
+          >Are you sure you want to deleting your comment?</span
+        >
+        <!-- <p>{{ selectedCommentId }}</p> -->
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn
+          flat
+          label="Ok"
+          color="primary"
+          @click="deleteComment(selectedCommentId, storyId)"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
   </q-dialog>
 
   <q-inner-loading
@@ -335,6 +427,7 @@ import { useQuasar, QSpinnerFacebook, QSpinnerHearts } from "quasar";
 import stories from "src/components/Reusables/storiesSlides.vue";
 import { Keyboard } from "@capacitor/keyboard";
 import userAuthUser from "src/composables/userAuthUser";
+import setStories from "src/composables/stories";
 import { useRoute, useRouter } from "vue-router";
 import useSupabase from "src/boot/supabase";
 
@@ -343,81 +436,59 @@ const route = useRoute();
 const router = useRouter();
 const { supabase } = useSupabase();
 const { user } = userAuthUser();
+const {
+  storyData,
+  comments,
+  fetchStory,
+  fetchComments,
+  insertNewComment,
+  deleteComment,
+  deleteStory,
+} = setStories();
+
+const storyId = route.query.id;
 
 const visibleKeybord = ref(false);
 const input = ref(null);
 const newComment = ref("");
-const comments = ref([]);
-const storyData = ref(null);
 const visible = ref(false);
-const showComments = ref(false);
 
+const confirm = ref(false);
+const dialogOpen = ref(false);
 const reportStoryDialog = ref(false);
+const deleteStoryDialog = ref(false);
+const deleteCommetDialog = ref(false);
 const reportCommentDialog = ref(false);
-const reportCommentId = ref(null);
 const guidelinesDialog = ref(false);
+
+const selectedCommentId = ref(null);
 const position = ref("top");
 
-const openReportStoryDialog = (pos) => {
+const showComments = computed(() => {
+  return comments.value.length > 0;
+});
+
+const openDialog = (pos, dialog, id) => {
   position.value = pos;
-  reportStoryDialog.value = true;
-};
-
-const openReportCommentDialog = (pos, id) => {
-  reportCommentId.value = id
-  position.value = pos;
-  reportCommentDialog.value = true;
-};
-
-const openGuidelinesDialog = (pos) => {
-  position.value = pos;
-  guidelinesDialog.value = true;
-};
-
-// Fetch story data by ID on component mount
-const fetchStory = async () => {
-  const storyId = route.query.id; // Get the story ID from route query parameters
-
-  if (storyId) {
-    const { data, error } = await supabase
-      .from("user_stories")
-      .select("*")
-      .eq("story_id", storyId)
-      .single(); // Retrieve the story by ID
-
-    if (error) {
-      console.error("Error fetching story:", error.message);
-    } else {
-      storyData.value = data;
-    }
+  switch (dialog) {
+    case "story":
+      reportStoryDialog.value = true;
+      break;
+    case "comment":
+      selectedCommentId.value = id;
+      reportCommentDialog.value = true;
+      break;
+    default:
+      guidelinesDialog.value = true;
+      break;
   }
-};
-
-// Fetch all stories on component mount
-const fetchComments = async () => {
-  const storyId = route.query.id;
-
-  const { data, error } = await supabase
-    .from("story_comments")
-    .select("*")
-    .eq("story_id", storyId)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching comments:", error.message);
-  } else if (data.length > 0) {
-    comments.value = data.filter(comment => comment.reported !== true);
-    console.log(comments.value);
-    showComments.value = true;
-  } else {
-    showComments.value = false;
-  }
+  dialogOpen.value = true;
 };
 
 // Increment views after 5 seconds
 let viewCounterTimeout;
 const incrementViews = async () => {
-  const storyId = route.query.id;
+  // const storyId = route.query.id;
   // Fetch the current view count first
   const { data, error: fetchError } = await supabase
     .from("user_stories")
@@ -446,69 +517,27 @@ const incrementViews = async () => {
   }
 };
 
-const incrementComments = async () => {
-  const storyId = route.query.id;
-  // Fetch the current view count first
-  const { data, error: fetchError } = await supabase
-    .from("user_stories")
-    .select("comments")
-    .eq("story_id", storyId)
-    .single();
-
-  if (fetchError) {
-    console.error("Error fetching current views:", fetchError.message);
-    return;
+const addComment = async (keyboardState, postComment) => {
+  if (keyboardState !== "hide") {
+    visibleKeybord.value = true;
+  } else {
+    visibleKeybord.value = false;
   }
 
-  const currentComments = data.comments || 0;
-  const newComments = currentComments + 1;
-
-  // Update the Comments column with the new value
-  const { error: updateError } = await supabase
-    .from("user_stories")
-    .update({ comments: newComments })
-    .eq("story_id", storyId)
-    .select();
-
-  console.log(newComments);
-
-  if (updateError) {
-    console.error("Error updating comments:", updateError.message);
-  }
-};
-
-const addComment = async () => {
-  const storyId = route.query.id;
-
-  if (newComment.value.trim().length > 0) {
-    try {
-      const { data, error: insertError } = await supabase
-        .from("story_comments")
-        .insert([
-          {
-            owner: { ...user.value.user_metadata },
-            story_id: storyId,
-            comment_text: newComment.value,
-          },
-        ])
-        .select();
-
-      if (insertError) throw insertError;
-
-      if (data && data.length > 0) {
-        incrementComments().then(() => {
-          newComment.value = null;
-          let timer;
-          visible.value = true;
-          fetchStory().then(() => {
-            fetchComments();
-            setTimeout(() => {
-              visible.value = false;
-            }, 300);
-          }); // Fetch the story when the component is mounted
-        });
-      }
-    } catch (error) {}
+  if (postComment && newComment.value.trim().length > 0) {
+    //const storyId = route.query.id;
+    const owner = { ...user.value.user_metadata };
+    await insertNewComment(storyId, owner, newComment.value).then(() => {
+      newComment.value = null;
+      let timer;
+      visible.value = true;
+      fetchStory(storyId).then(() => {
+        fetchComments(storyId);
+        setTimeout(() => {
+          visible.value = false;
+        }, 300);
+      });
+    });
   }
 };
 
@@ -537,20 +566,8 @@ const formattedTime = computed(() => {
   }
 });
 
-const commentText = ref(
-  "At first, she brushed it off as stress from work or the changing weather. But as the weeks went by, Susan began to suspect that something more significant was happening."
-);
-
-// const tags = ref([
-//   "PMS",
-//   "Perimenopause",
-//   "Anxiety",
-//   "HRT",
-//   "Low mood or depression",
-// ]);
-
 const reportStory = async () => {
-  const storyId = route.query.id;
+  //const storyId = route.query.id;
 
   try {
     const { data, error } = await supabase
@@ -574,12 +591,12 @@ const reportStory = async () => {
 };
 
 const reportComment = async () => {
-  console.log(reportCommentId.value)
+  console.log(selectedCommentId.value);
   try {
     const { data, error } = await supabase
       .from("story_comments")
       .update({ reported: true })
-      .eq("comment_id", reportCommentId.value)
+      .eq("comment_id", selectedCommentId.value)
       .select("reported")
       .single();
 
@@ -590,19 +607,35 @@ const reportComment = async () => {
 
     if (data.reported) {
       console.log("story hass been reported"); // Update UI to reflect that the story has been reported
-      fetchComments();
-      reportCommentDialog.value = !reportCommentDialog.value
+      fetchComments(route.query.id);
+      reportCommentDialog.value = !reportCommentDialog.value;
+      dialogOpen.value = !dialogOpen.value;
     }
   } catch (err) {
     console.error("Unexpected error reporting story:", err.message);
   }
 };
 
+const OpenDeleteItemDialog = (item, id) => {
+  switch (item) {
+    case "comment":
+      selectedCommentId.value = id;
+      deleteCommetDialog.value = true;
+      deleteStoryDialog.value = false;
+      break;
+    default:
+      deleteCommetDialog.value = false;
+      deleteStoryDialog.value = true;
+      break;
+  }
+  confirm.value = true;
+};
+
 onMounted(() => {
   let timer;
   visible.value = true;
-  fetchStory().then(() => {
-    fetchComments();
+  fetchStory(route.query.id).then(() => {
+    fetchComments(route.query.id);
     setTimeout(() => {
       visible.value = false;
     }, 300);
@@ -677,5 +710,22 @@ const thumbStyle = ref({
       url("~/src/assets/storiesbackground2.jpg");
   background-size: cover;
   background-position: center;
+}
+
+.triangle {
+  position: absolute;
+  z-index: 1;
+  left: -5%;
+  top: 0%;
+  border-radius: 0px;
+  rotate: 180deg;
+}
+
+.triangle-0 {
+  width: 18px;
+  height: 16px;
+  border-left: solid 8px rgb(255, 255, 255);
+  border-bottom: solid 8px transparent;
+  border-top: solid 8px transparent;
 }
 </style>

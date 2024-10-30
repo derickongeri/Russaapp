@@ -1,16 +1,12 @@
 <template>
-  <q-scroll-area
-    :thumb-style="thumbStyle"
-    :bar-style="barStyle"
-    style="height: 94vh; min-width: 100%"
-    class="bg-grey-4"
-  >
-    <div class="q-pa-md" style="width: 100vw">
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-      >
+  <div>
+    <q-scroll-area
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 94vh; min-width: 100%"
+      class="bg-grey-4"
+    >
+      <div class="q-pa-md" style="width: 100vw">
         <div v-if="stories.length > 0" class="story-list">
           <q-card
             v-for="story in stories"
@@ -85,42 +81,29 @@
         </div>
 
         <div v-else class="text-center text-grey-7">No stories posted yet.</div>
-      </transition>
-    </div>
-  </q-scroll-area>
-  <q-inner-loading class="bg-white" :showing="visible">
-    <q-spinner-hearts size="50px" color="primary" />
-  </q-inner-loading>
-  <q-page-sticky v-if="!visible" position="bottom-right" :offset="[18, 18]">
-    <q-btn fab icon="add" color="primary" to="/createpost" />
-  </q-page-sticky>
+      </div>
+    </q-scroll-area>
+    <q-inner-loading class="bg-white" :showing="visible">
+      <q-spinner-hearts size="50px" color="primary" />
+    </q-inner-loading>
+    <q-page-sticky v-if="!visible" position="bottom-right" :offset="[18, 18]">
+      <q-btn fab icon="add" color="primary" to="/createpost" />
+    </q-page-sticky>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useQuasar, QSpinnerFacebook, QSpinnerHearts } from "quasar";
+import { useQuasar, QSpinnerHearts } from "quasar";
 import { useRouter } from "vue-router";
 import useSupabase from "src/boot/supabase";
+import setStories from "src/composables/stories";
 
 const $q = useQuasar();
 const router = useRouter();
 const { supabase } = useSupabase();
-const stories = ref([]);
 const visible = ref(false);
-
-// Fetch all stories on component mount
-const fetchStories = async () => {
-  const { data, error } = await supabase
-    .from("user_stories")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching stories:", error.message);
-  } else {
-    stories.value = data;
-  }
-};
+const { stories, fetchStories } = setStories();
 
 onMounted(() => {
   let timer;

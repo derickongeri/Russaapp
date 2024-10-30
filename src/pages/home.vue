@@ -33,6 +33,9 @@
       </div>
 
       <div class="row q-px-sm justify-between" style="width: 100%">
+        <div class="row q-px-md q-my-md head-text" style="width: 100%">
+          suggestions
+        </div>
         <div v-for="item in journalList" :key="item.id" class="col-6">
           <div class="q-pa-sm" style="width: 100%">
             <q-btn
@@ -365,7 +368,7 @@ const router = useRouter();
 
 const { user } = userAuthUser();
 const username = computed(() => {
-  return user.value.user_metadata.firstName
+  return user.value.user_metadata.firstName;
 });
 
 const journalList = ref([
