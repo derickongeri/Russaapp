@@ -7,7 +7,7 @@
     <q-scroll-area
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
-      style="height: 83vh; min-width: 100%"
+      :style="{ height: scrollAreaHeight, minWidth: '100%' }"
       class=""
     >
       <div>
@@ -239,8 +239,9 @@
         </div>
       </div>
     </q-scroll-area>
+
     <div
-      class="q-px-sm "
+      class="q-px-sm"
       style="
         position: fixed;
         bottom: 0%;
@@ -475,6 +476,9 @@ const {
 const storyId = route.query.id;
 
 const visibleKeybord = ref(false);
+// Define computed height based on the isExpanded value
+const scrollAreaHeight = computed(() => (visibleKeybord.value ? '50vh' : '83vh'));
+
 const input = ref(null);
 const newComment = ref("");
 const visible = ref(false);
