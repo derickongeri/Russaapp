@@ -98,8 +98,8 @@
         class="row bg-white q-mx-sm q-px-md q-py-sm items-center"
         style="border-radius: 10px"
       >
-        <div class="header-text text-primary" style="font-size: 20px">
-          Comments
+        <div class="header-text text-grey-9" style="font-size: 16px">
+          <b>{{ storyData?.comments }}</b> Comments
         </div>
         <q-space />
         <q-btn
@@ -130,7 +130,7 @@
               <q-card
                 flat
                 class="q-ma-md q-pt-xs bg-white"
-                style="border-radius: 0px 20px 20px 20px"
+                style="border-radius: 5px 20px 20px 20px"
               >
                 <q-item>
                   <div class="triangle triangle-0"></div>
@@ -703,8 +703,8 @@ const thumbStyle = ref({
   padding: 0 0 0px;
   background-image: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.25),
-      rgba(0, 0, 0, 0.25)
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15)
     ),
     /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
       url("~/src/assets/storiesbackground2.jpg");

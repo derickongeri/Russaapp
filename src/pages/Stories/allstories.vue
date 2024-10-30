@@ -4,7 +4,7 @@
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       style="height: 94vh; min-width: 100%"
-      class="bg-grey-4"
+      class="stories-container"
     >
       <div class="q-pa-md" style="width: 100vw">
         <div v-if="stories.length > 0" class="story-list">
@@ -183,11 +183,11 @@ const thumbStyle = ref({
   padding: 0 0 0px;
   background-image: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.219),
-      rgba(0, 0, 0, 0.35)
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15)
     ),
     /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
-      url("~/src/assets/storiesbackground.jpg");
+      url("~/src/assets/storiesbackground2.jpg");
   background-size: cover;
   background-position: center;
 }
