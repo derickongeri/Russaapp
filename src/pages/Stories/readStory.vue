@@ -1,5 +1,9 @@
 <template>
-  <div v-if="!visible" class="stories-container-bg" style="min-height: 90vh; width: 100vw">
+  <div
+    v-if="!visible"
+    class="stories-container-bg"
+    style="min-height: 90vh; width: 100vw"
+  >
     <div>
       <div class="row q-pt-sm q-mb-sm" style="width: 100%"></div>
       <div class="q-px-md bg-white q-mx-sm q-pt-sm" style="border-radius: 10px">
@@ -63,9 +67,9 @@
           <div class="caption-text q-mr-md">
             <b>{{ storyData?.views }}</b> Views
           </div>
-          <div class="caption-text">
+          <!-- <div class="caption-text">
             <b>{{ storyData?.comments }}</b> Comments
-          </div>
+          </div> -->
           <q-space />
           <q-btn
             v-if="storyData?.user_email === user.email"
@@ -130,7 +134,7 @@
               <q-card
                 flat
                 class="q-ma-md q-pt-xs bg-white"
-                style="border-radius: 5px 20px 20px 20px"
+                style="border-radius: 10px 10px 10px 10px"
               >
                 <q-item>
                   <div class="triangle triangle-0"></div>
@@ -220,31 +224,32 @@
         </div>
       </div>
       <div
-        class="q-px-md bg-white"
+        class="q-px-sm bg-white"
         style="position: fixed; bottom: 0%; width: 100%"
       >
-        <div class="q-py-sm header-text text-primary" style="width: 100%">
-          <div class="story-box bg-white items-center row" style="width: 100%">
+        <div class="row q-py-sm header-text text-primary" style="width: 100%">
+          <div class="story-box col q-mr-sm items-center">
             <q-input
               ref="input"
-              class="col-10 header-text q-pl-sm"
+              dense
+              class="col-10 header-text q-pl-md"
               style="font-size: 16px; line-height: 1.5em"
               v-model="newComment"
               borderless
-              placeholder="Add comment"
+              placeholder="Add a comment"
               autogrow
               @focus="addComment('show', false)"
               @blur="addComment('hide', false)"
             />
-            <div class="col-2 column justify-around items-center">
-              <q-btn
-                flat
-                round
-                color="primary"
-                icon="mdi-send"
-                @click="addComment('hide', true)"
-              />
-            </div>
+          </div>
+          <div class="column justify-around items-center">
+            <q-btn
+              unelevated
+              round
+              color="primary"
+              icon="mdi-send"
+              @click="addComment('hide', true)"
+            />
           </div>
         </div>
 
@@ -695,7 +700,7 @@ const thumbStyle = ref({
 <style>
 .story-box {
   border: solid 1px green;
-  border-radius: 8px;
+  border-radius: 28px;
 }
 
 .stories-container-bg {
