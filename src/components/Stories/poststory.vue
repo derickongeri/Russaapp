@@ -252,13 +252,19 @@ watch(selectedTags, (val) => {
 });
 
 const postStory = async () => {
+  let userName;
+  if (shareAnonymously.value) {
+    userName = 'Anonymous'
+  } else {
+    userName = user.value.user_metadata.firstName
+  }
   if (isStoryValid.value) {
     try {
       const { data, error: insertError } = await supabase
         .from("user_stories")
         .insert([
           {
-            user_name: user.value.user_metadata.firstName,
+            user_name: userName,
             user_email: user.value.email,
             title: story.value.title,
             body: story.value.body,
