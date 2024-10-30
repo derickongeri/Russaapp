@@ -93,30 +93,22 @@
     Please select atleas one tag*
   </div>
 
-  <div class="row q-py-md items-center justify-end" style="width: 100%">
-    <!-- <q-btn
-      no-caps
-      class="tab-text"
-      size="lg"
-      unelevated
-      rounded
-      outline
-      color="primary"
-      label="Cancel"
-      style="width: 40%"
-    /> -->
-    <q-btn
-      no-caps
-      class="tab-text"
-      size="lg"
-      unelevated
-      rounded
-      color="primary"
-      label="Post"
-      @click="postStory"
-      style="width: 40%"
-    />
+  <div style="width: 100%; position: fixed; bottom: 0%;left:0%">
+    <div class="row q-py-md items-center justify-center">
+      <q-btn
+        no-caps
+        class="tab-text"
+        size="lg"
+        unelevated
+        rounded
+        color="primary"
+        label="Post"
+        @click="postStory"
+        style="width: 80%"
+      />
+    </div>
   </div>
+
   <q-dialog v-model="dialog" :position="position">
     <q-card style="width: 100%; border-radius: 20px 20px 0px 0px">
       <q-card-section class="row q-my-lg items-center justify-center no-wrap">
@@ -287,7 +279,7 @@ const postStory = async () => {
 
       // Redirect to the story view page with the newly inserted story's ID
       if (data && data.length > 0) {
-        console.log(data)
+        console.log(data);
         router.push({
           name: "readstory",
           query: { id: data[0].story_id },

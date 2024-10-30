@@ -3,7 +3,7 @@
     :thumb-style="thumbStyle"
     :bar-style="barStyle"
     style="height: 94vh; min-width: 100%"
-    class="stories-container"
+    class="bg-grey-4"
   >
     <div class="q-pa-md" style="width: 100vw">
       <transition
@@ -19,7 +19,6 @@
             clickable
             @click="goToStory(story.story_id)"
             flat
-            bordered
           >
             <div class="row items-center">
               <q-avatar size="40px" color="green-2" text-color="white">{{
@@ -183,7 +182,7 @@ const thumbStyle = ref({
 
 .story-item {
   padding: 16px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 8px;
 }
 
