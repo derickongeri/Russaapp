@@ -703,8 +703,8 @@ const thumbStyle = ref({
   padding: 0 0 0px;
   background-image: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.25),
-      rgba(255, 255, 255, 0.25)
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.25)
     ),
     /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
       url("~/src/assets/storiesbackground2.jpg");
