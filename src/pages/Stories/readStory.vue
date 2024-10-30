@@ -2,263 +2,284 @@
   <div
     v-if="!visible"
     class="stories-container-bg"
-    style="min-height: 90vh; width: 100vw"
+    style="min-height: 96vh; width: 100vw"
   >
-    <div>
-      <div class="row q-pt-sm q-mb-sm" style="width: 100%"></div>
-      <div class="q-px-md bg-white q-mx-sm q-pt-sm" style="border-radius: 10px">
-        <div class="row items-center">
-          <q-avatar size="40px" color="green-2" text-color="white">{{
-            storyData?.user_name.charAt(0) || "A"
-          }}</q-avatar>
-          <div class="column q-gutter-y-sm">
-            <div
-              class="row q-px-md header-text text-primary"
-              style="font-size: 20px"
-            >
-              {{ storyData?.user_name || "Username" }}
+    <q-scroll-area
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 83vh; min-width: 100%"
+      class=""
+    >
+      <div>
+        <div class="row q-pt-sm q-mb-sm" style="width: 100%"></div>
+        <div
+          class="q-px-md bg-white q-mx-sm q-pt-sm"
+          style="border-radius: 10px"
+        >
+          <div class="row items-center">
+            <q-avatar size="40px" color="green-2" text-color="white">{{
+              storyData?.user_name.charAt(0) || "A"
+            }}</q-avatar>
+            <div class="column q-gutter-y-sm">
+              <div
+                class="row q-px-md header-text text-primary"
+                style="font-size: 20px"
+              >
+                {{ storyData?.user_name || "Username" }}
+              </div>
+              <div class="caption-text q-px-md" style="font-style: italic">
+                {{ formattedTime }}
+              </div>
             </div>
-            <div class="caption-text q-px-md" style="font-style: italic">
-              {{ formattedTime }}
-            </div>
+            <q-space />
+
+            <div></div>
           </div>
-          <q-space />
 
-          <div></div>
-        </div>
-
-        <div
-          class="q-py-md header-text text-primary"
-          style="width: 100%; line-height: 1.2em"
-        >
-          {{
-            storyData?.title || "A journey through menopause: Embracing Change"
-          }}
-        </div>
-
-        <div
-          class="q-py-md header-text text-grey-9"
-          style="
-            font-size: 20px;
-            font-weight: 300;
-            line-height: 1.5em;
-            width: 100%;
-          "
-        >
-          {{ storyData?.body || "Story content goes here..." }}
-        </div>
-
-        <div
-          class="q-pt-md header-text text-grey-9"
-          style="font-size: 20px; font-weight: 300; width: 100%"
-        >
-          <q-chip
-            size="md"
-            outline
-            color="grey-7"
-            v-for="(tag, index) in storyData?.story_tags || []"
-            :key="index"
+          <div
+            class="q-py-md header-text text-primary"
+            style="width: 100%; line-height: 1.2em"
           >
-            {{ tag.label }}
-          </q-chip>
-        </div>
-        <q-separator class="q-mt-md"></q-separator>
-        <div class="row q-my-sm items-center" style="font-size: 16px">
-          <div class="caption-text q-mr-md">
-            <b>{{ storyData?.views }}</b> Views
+            {{
+              storyData?.title ||
+              "A journey through menopause: Embracing Change"
+            }}
           </div>
-          <!-- <div class="caption-text">
+
+          <div
+            class="q-py-md header-text text-grey-9"
+            style="
+              font-size: 20px;
+              font-weight: 300;
+              line-height: 1.5em;
+              width: 100%;
+            "
+          >
+            {{ storyData?.body || "Story content goes here..." }}
+          </div>
+
+          <div
+            class="q-pt-md header-text text-grey-9"
+            style="font-size: 20px; font-weight: 300; width: 100%"
+          >
+            <q-chip
+              size="md"
+              outline
+              color="grey-7"
+              v-for="(tag, index) in storyData?.story_tags || []"
+              :key="index"
+            >
+              {{ tag.label }}
+            </q-chip>
+          </div>
+          <q-separator class="q-mt-md"></q-separator>
+          <div class="row q-my-sm items-center" style="font-size: 16px">
+            <div class="caption-text q-mr-md">
+              <b>{{ storyData?.views }}</b> Views
+            </div>
+            <!-- <div class="caption-text">
             <b>{{ storyData?.comments }}</b> Comments
           </div> -->
+            <q-space />
+            <q-btn
+              v-if="storyData?.user_email === user.email"
+              no-caps
+              flat
+              size=""
+              color="primary"
+              @click="OpenDeleteItemDialog('story')"
+            >
+              <div class="q-px-sm">Delete story</div>
+              <q-icon
+                size="xs"
+                name="mdi-delete-alert-outline"
+                color="primary"
+              />
+            </q-btn>
+            <q-btn
+              v-else
+              no-caps
+              flat
+              size=""
+              color="primary"
+              @click="openDialog('bottom', 'story')"
+            >
+              <div class="q-px-sm">Report this story</div>
+              <q-icon size="xs" name="mdi-alert-outline" color="primary" />
+            </q-btn>
+          </div>
+        </div>
+      </div>
+
+      <div class="comment-section q-pt-sm">
+        <div
+          class="row bg-white q-mx-sm q-px-md q-py-sm items-center"
+          style="border-radius: 10px"
+        >
+          <div class="header-text text-grey-9" style="font-size: 16px">
+            <b>{{ storyData?.comments }}</b> Comments
+          </div>
           <q-space />
           <q-btn
-            v-if="storyData?.user_email === user.email"
             no-caps
             flat
             size=""
             color="primary"
-            @click="OpenDeleteItemDialog('story')"
+            @click="openDialog('bottom', 'guidelines')"
           >
-            <div class="q-px-sm">Delete story</div>
-            <q-icon size="xs" name="mdi-delete-alert-outline" color="primary" />
-          </q-btn>
-          <q-btn
-            v-else
-            no-caps
-            flat
-            size=""
-            color="primary"
-            @click="openDialog('bottom', 'story')"
-          >
-            <div class="q-px-sm">Report this story</div>
-            <q-icon size="xs" name="mdi-alert-outline" color="primary" />
+            <div class="q-px-sm">Community guidelines</div>
+            <q-icon size="" name="mdi-help-circle-outline" color="primary" />
           </q-btn>
         </div>
-      </div>
-    </div>
 
-    <div class="comment-section q-pt-sm">
-      <div
-        class="row bg-white q-mx-sm q-px-md q-py-sm items-center"
-        style="border-radius: 10px"
-      >
-        <div class="header-text text-grey-9" style="font-size: 16px">
-          <b>{{ storyData?.comments }}</b> Comments
-        </div>
-        <q-space />
-        <q-btn
-          no-caps
-          flat
-          size=""
-          color="primary"
-          @click="openDialog('bottom', 'guidelines')"
-        >
-          <div class="q-px-sm">Community guidelines</div>
-          <q-icon size="" name="mdi-help-circle-outline" color="primary" />
-        </q-btn>
-      </div>
-
-      <div v-if="showComments" class="">
-        <q-list v-for="comment in comments" :key="comment.id">
-          <div class="row">
-            <div class="col-1">
-              <q-item class="q-pt-lg">
-                <q-item-section top avatar>
-                  <q-avatar size="sm" color="primary" text-color="white">{{
-                    comment.owner.firstName.charAt(0) || "A"
-                  }}</q-avatar>
-                </q-item-section>
-              </q-item>
-            </div>
-            <div class="col">
-              <q-card
-                flat
-                class="q-ma-md q-pt-xs bg-white"
-                style="border-radius: 10px 10px 10px 10px"
-              >
-                <q-item>
-                  <div class="triangle triangle-0"></div>
-                  <q-item-section>
-                    <div class="row items-center">
-                      <div
-                        class="header-text text-primary"
-                        style="font-size: 16px; font-weight: normal"
-                      >
-                        {{ comment.owner.firstName }}
-                        {{ comment.owner.lastName }}
-                      </div>
-                      <q-space />
-                      <div
-                        class="caption-text"
-                        style="font-style: italic; font-size: 16px"
-                      >
-                        {{ formatTime(comment.created_at) }}
-                      </div>
-                    </div>
-
-                    <div
-                      class="q-py-md header-text text-grey-9"
-                      style="
-                        font-size: 20px;
-                        font-weight: 300;
-                        line-height: 1.5em;
-                        width: 100%;
-                      "
-                    >
-                      {{ comment.comment_text }}
-                    </div>
-
-                    <div class="row items-center" style="font-size: 16px">
-                      <q-space />
-                      <q-btn
-                        v-if="storyData?.user_email === user.email"
-                        no-caps
-                        flat
-                        size=""
-                        color="primary"
-                        @click="
-                          OpenDeleteItemDialog('comment', comment.comment_id)
-                        "
-                      >
-                        <div class="q-px-sm">Delete comment</div>
-                        <q-icon
-                          size="xs"
-                          name="mdi-delete-alert-outline"
-                          color="primary"
-                        />
-                      </q-btn>
-                      <q-btn
-                        v-else
-                        no-caps
-                        flat
-                        size=""
-                        color="primary"
-                        @click="
-                          openDialog('bottom', 'comment', comment.comment_id)
-                        "
-                      >
-                        <div class="q-px-sm">Report comment</div>
-                        <q-icon
-                          size="xs"
-                          name="mdi-chat-alert-outline"
-                          color="primary"
-                        />
-                      </q-btn>
-                    </div>
+        <div v-if="showComments" class="">
+          <q-list v-for="comment in comments" :key="comment.id">
+            <div class="row">
+              <div class="col-1">
+                <q-item class="q-pt-lg">
+                  <q-item-section top avatar>
+                    <q-avatar size="sm" color="primary" text-color="white">{{
+                      comment.owner.firstName.charAt(0) || "A"
+                    }}</q-avatar>
                   </q-item-section>
                 </q-item>
-              </q-card>
-            </div>
-          </div>
-        </q-list>
-        <div class="row" style="width: 100%; min-height: 10vh"></div>
-      </div>
+              </div>
+              <div class="col">
+                <q-card
+                  flat
+                  class="q-ma-md q-pt-xs bg-white"
+                  style="border-radius: 10px 10px 10px 10px"
+                >
+                  <q-item>
+                    <div class="triangle triangle-0"></div>
+                    <q-item-section>
+                      <div class="row items-center">
+                        <div
+                          class="header-text text-primary"
+                          style="font-size: 16px; font-weight: normal"
+                        >
+                          {{ comment.owner.firstName }}
+                          {{ comment.owner.lastName }}
+                        </div>
+                        <q-space />
+                        <div
+                          class="caption-text"
+                          style="font-style: italic; font-size: 16px"
+                        >
+                          {{ formatTime(comment.created_at) }}
+                        </div>
+                      </div>
 
-      <div
-        v-if="!showComments"
-        class="column items-center justify-center"
-        style="width: 100%; height: 20vh"
-      >
-        <div class="caption-text" style="font-style: italic">
-          No comments yet*
-        </div>
-      </div>
-      <div
-        class="q-px-sm bg-white"
-        style="position: fixed; bottom: 0%; width: 100%"
-      >
-        <div class="row q-py-sm header-text text-primary" style="width: 100%">
-          <div class="story-box col q-mr-sm items-center">
-            <q-input
-              ref="input"
-              dense
-              class="col-10 header-text q-pl-md"
-              style="font-size: 16px; line-height: 1.5em"
-              v-model="newComment"
-              borderless
-              placeholder="Add a comment"
-              autogrow
-              @focus="addComment('show', false)"
-              @blur="addComment('hide', false)"
-            />
-          </div>
-          <div class="column justify-around items-center">
-            <q-btn
-              unelevated
-              round
-              color="primary"
-              icon="mdi-send"
-              @click="addComment('hide', true)"
-            />
-          </div>
+                      <div
+                        class="q-py-md header-text text-grey-9"
+                        style="
+                          font-size: 20px;
+                          font-weight: 300;
+                          line-height: 1.5em;
+                          width: 100%;
+                        "
+                      >
+                        {{ comment.comment_text }}
+                      </div>
+
+                      <div class="row items-center" style="font-size: 16px">
+                        <q-btn
+                          v-if="storyData?.user_email === user.email"
+                          no-caps
+                          flat
+                          dense
+                          size=""
+                          color="primary"
+                          @click="
+                            OpenDeleteItemDialog('comment', comment.comment_id)
+                          "
+                        >
+                          <q-icon
+                            size="xs"
+                            name="mdi-delete-forever-outline"
+                            color="primary"
+                          />
+                          <div class="q-px-sm">Delete</div>
+                        </q-btn>
+                        <q-btn
+                          v-else
+                          no-caps
+                          flat
+                          size=""
+                          color="primary"
+                          @click="
+                            openDialog('bottom', 'comment', comment.comment_id)
+                          "
+                        >
+                          <div class="q-px-sm">Report</div>
+                          <q-icon
+                            size="xs"
+                            name="mdi-chat-alert-outline"
+                            color="primary"
+                          />
+                        </q-btn>
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                </q-card>
+              </div>
+            </div>
+          </q-list>
+          <div class="row" style="width: 100%; min-height: 10vh"></div>
         </div>
 
         <div
-          v-if="visibleKeybord"
-          class="row"
-          style="width: 100%; min-height: 30vh"
-        ></div>
+          v-if="!showComments"
+          class="column items-center justify-center"
+          style="width: 100%; height: 20vh"
+        >
+          <div class="caption-text" style="font-style: italic">
+            No comments yet*
+          </div>
+        </div>
       </div>
+    </q-scroll-area>
+    <div
+      class="q-px-sm "
+      style="
+        position: fixed;
+        bottom: 0%;
+        width: 100%;
+        border-radius: 20px 20px 0px 0px;
+      "
+    >
+      <div class="row q-py-md header-text text-primary" style="width: 100%">
+        <div class="story-box bg-white col q-mr-sm items-center">
+          <q-input
+            ref="input"
+            class="col-10 header-text q-pl-md"
+            style="font-size: 16px; line-height: 1.5em"
+            v-model="newComment"
+            dense
+            borderless
+            placeholder="Add a comment"
+            autogrow
+            @focus="addComment('show', false)"
+            @blur="addComment('hide', false)"
+          />
+        </div>
+        <div class="column justify-around items-center">
+          <q-btn
+            unelevated
+            size=""
+            round
+            color="primary"
+            icon="mdi-send"
+            @click="addComment('hide', true)"
+          />
+        </div>
+      </div>
+
+      <div
+        v-if="visibleKeybord"
+        class="row"
+        style="width: 100%; min-height: 30vh"
+      ></div>
     </div>
   </div>
 
