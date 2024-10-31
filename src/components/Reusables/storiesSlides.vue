@@ -59,7 +59,39 @@
             },
           ]"
         >
-          <div class="col">
+          <div
+            :class="[
+              'col-4',
+              'caption-text',
+
+              {
+                'text-grey-8': stories.indexOf(story) % 3 === 0,
+                'text-grey-3': stories.indexOf(story) % 3 === 1,
+                'text-grey-9': stories.indexOf(story) % 3 === 2,
+              },
+            ]"
+            style="font-weight: 700"
+          >
+            {{ story.title }}
+          </div>
+          <div
+            :class="[
+              'col-4',
+              'caption-text',
+              {
+                'text-grey-8': stories.indexOf(story) % 3 === 0,
+                'text-grey-3': stories.indexOf(story) % 3 === 1,
+                'text-grey-9': stories.indexOf(story) % 3 === 2,
+              },
+            ]"
+          >
+            {{
+              story.body.length > 100
+                ? story.body.substring(0, 100) + "..."
+                : story.body
+            }}
+          </div>
+          <div class="">
             <div class="row items-center text-grey-1">
               <q-avatar size="sm" color="primary" text-color="white">
                 {{ story.user_name.charAt(0) || "A" }}</q-avatar
@@ -97,38 +129,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            :class="[
-              'col',
-              'caption-text',
-
-              {
-                'text-grey-8': stories.indexOf(story) % 3 === 0,
-                'text-grey-3': stories.indexOf(story) % 3 === 1,
-                'text-grey-9': stories.indexOf(story) % 3 === 2,
-              },
-            ]"
-            style="font-weight: 700"
-          >
-            {{ story.title }}
-          </div>
-          <div
-            :class="[
-              'col',
-              'caption-text',
-              {
-                'text-grey-8': stories.indexOf(story) % 3 === 0,
-                'text-grey-3': stories.indexOf(story) % 3 === 1,
-                'text-grey-9': stories.indexOf(story) % 3 === 2,
-              },
-            ]"
-          >
-            {{
-              story.body.length > 50
-                ? story.body.substring(0, 50) + "..."
-                : story.body
-            }}
           </div>
         </q-item>
       </div>
