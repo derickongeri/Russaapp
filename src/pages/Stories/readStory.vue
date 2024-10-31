@@ -2,7 +2,7 @@
   <div
     v-if="!visible"
     class="stories-container-bg"
-    style="min-height: 100vh; width: 100vw"
+    style="min-height: 96vh; width: 100vw"
   >
     <q-scroll-area
       :thumb-style="thumbStyle"
@@ -240,29 +240,36 @@
       </div>
     </q-scroll-area>
 
-    <div
-      class="q-px-sm comment-box"
-      :style="{backgroundColor: commentBoxBackground}"
-    >
-      <div v-if="visibleKeybord" class="row q-px-md q-pt-sm caption-text" style="width: 100%; font-size:small">
-        Replying to @{{ storyData?.user_name || "Username" }}
-      </div>
-      <div class="row q-py-md header-text text-primary" style="width: 100%">
-        <div class="story-box bg-white col q-mr-sm items-center">
+    <div class="comment-box" :style="{ backgroundColor: commentBoxBackground }">
+      <q-btn
+        flat
+        no-caps
+        class="row q-py-md header-text text-primary"
+        @click="prompt"
+        style="width: 100vw"
+      >
+        <q-btn
+          unelevated
+          size=""
+          round
+          color="primary"
+          icon="mdi-send"
+          @click="prompt"
+        />
+        <div class="story-box bg-white col q-ml-sm items-center" style="border-radius: 20px;">
           <q-input
             ref="input"
             class="col-10 header-text q-px-md"
-            style="font-size: 16px; line-height: 1.5em;max-height: 48px;"
+            style="font-size: 16px; line-height: 1.5em; max-height: 48px"
             v-model="newComment"
+            borderless
             dense
-            autogrow
-            
             placeholder="Add a comment"
-            @focus="addComment('show', false)"
-            @blur="addComment('hide', false)"
+            disable
+            readonly
           />
         </div>
-        <div class="column justify-around items-center">
+        <!-- <div class="column justify-around items-center">
           <q-btn
             unelevated
             size=""
@@ -271,8 +278,8 @@
             icon="mdi-send"
             @click="addComment('hide', true)"
           />
-        </div>
-      </div>
+        </div> -->
+      </q-btn>
 
       <div
         v-if="visibleKeybord"
@@ -281,6 +288,56 @@
       ></div>
     </div>
   </div>
+
+  <q-dialog
+    v-model="addCommentDialog"
+    @show="focusInput"
+    position="bottom"
+    backdrop-filter="blur(4px)"
+  >
+    <q-card class="body-text" style="min-height: 70vh; border-radius: 20px">
+      <q-card-section class="row items-center q-pb-none">
+        <q-btn icon="close" flat round dense v-close-popup />
+        <q-space />
+        <div class="caption-text" style="font-weight: 700">Add comment</div>
+        <q-space />
+        <q-btn
+          class="q-px-md"
+          no-caps
+          label="post"
+          unelevated
+          rounded
+          color="primary"
+          dense
+          @click="addComment('hide', true)"
+          v-close-popup
+        />
+      </q-card-section>
+
+      <q-card-section>
+        <q-input
+          ref="input"
+          class="col-10 header-text q-px-md"
+          style="font-size: 16px; line-height: 1.5em;min-height: 20vh;"
+          v-model="newComment"
+          borderless
+          counter
+          dense
+          autogrow
+          placeholder="What are your thoughts? Remember to be respectful, or show love and support"
+          @focus="addComment('show', false)"
+          @blur="addComment('hide', false)"
+          :rules="[
+            (val) => val.length <= 250 || 'Please use maximum 250 characters',
+          ]"
+        >
+          <template #counter>
+            <div class="q-mt-md">{{ newComment.length }} / 250</div>
+          </template>
+        </q-input>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 
   <q-dialog
     transition-show="slide-left"
@@ -491,6 +548,7 @@ const confirm = ref(false);
 const dialogOpen = ref(false);
 const reportStoryDialog = ref(false);
 const deleteStoryDialog = ref(false);
+const addCommentDialog = ref(false);
 const deleteCommetDialog = ref(false);
 const reportCommentDialog = ref(false);
 const guidelinesDialog = ref(false);
@@ -551,6 +609,15 @@ const incrementViews = async () => {
   }
 };
 
+function prompt() {
+  addCommentDialog.value = true;
+}
+
+const focusInput = () => {
+  // Focus the input when the dialog shows
+  input.value && input.value.focus();
+};
+
 const addComment = async (keyboardState, postComment) => {
   if (keyboardState !== "hide") {
     visibleKeybord.value = true;
@@ -562,7 +629,7 @@ const addComment = async (keyboardState, postComment) => {
     //const storyId = route.query.id;
     const owner = { ...user.value.user_metadata };
     await insertNewComment(storyId, owner, newComment.value).then(() => {
-      newComment.value = null;
+      newComment.value = "";
       let timer;
       visible.value = true;
       fetchStory(storyId).then(() => {

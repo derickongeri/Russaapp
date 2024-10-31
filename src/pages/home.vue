@@ -214,7 +214,7 @@
       </div> -->
     </div>
 
-    <div>
+    <!-- <div>
       <div class="row q-px-md q-my-md head-text" style="width: 100%">
         The Basics
       </div>
@@ -244,7 +244,6 @@
                   <div class="caption-text">
                     How to keep hydrated during perimenopause and menopause
                   </div>
-                  <!-- <div class="text-h6">Our Changing Planet</div> -->
                   <div class="text-subtitle2">by John Doe</div>
                 </q-card-section>
               </q-card>
@@ -282,9 +281,9 @@
           </div>
         </q-scroll-area>
       </div>
-    </div>
+    </div> -->
 
-    <stories />
+    <stories/>
 
     <q-separator insert />
 
