@@ -256,7 +256,10 @@
           icon="mdi-send"
           @click="prompt"
         />
-        <div class="story-box bg-white col q-ml-sm items-center" style="border-radius: 20px;">
+        <div
+          class="story-box bg-white col q-ml-sm items-center"
+          style="border-radius: 20px"
+        >
           <q-input
             ref="input"
             class="col-10 header-text q-px-md"
@@ -280,12 +283,6 @@
           />
         </div> -->
       </q-btn>
-
-      <div
-        v-if="visibleKeybord"
-        class="row"
-        style="width: 100%; min-height: 30vh"
-      ></div>
     </div>
   </div>
 
@@ -295,7 +292,7 @@
     position="bottom"
     backdrop-filter="blur(4px)"
   >
-    <q-card class="body-text" style="min-height: 70vh; border-radius: 20px">
+    <q-card class="body-text" style="min-height: 30vh; border-radius: 20px">
       <q-card-section class="row items-center q-pb-none">
         <q-btn icon="close" flat round dense v-close-popup />
         <q-space />
@@ -304,12 +301,10 @@
         <q-btn
           class="q-px-md"
           no-caps
-          label="post"
-          unelevated
-          rounded
+          label=""
+          flat
           color="primary"
           dense
-          @click="addComment('hide', true)"
           v-close-popup
         />
       </q-card-section>
@@ -318,24 +313,60 @@
         <q-input
           ref="input"
           class="col-10 header-text q-px-md"
-          style="font-size: 16px; line-height: 1.5em;min-height: 20vh;"
+          style="font-size: 16px; line-height: 1.5em; min-height: 20vh"
           v-model="newComment"
           borderless
           counter
           dense
+          label-slot
           autogrow
           placeholder="What are your thoughts? Remember to be respectful, or show love and support"
-          @focus="addComment('show', false)"
-          @blur="addComment('hide', false)"
+          @focus="visibleKeybord = true"
+          @blur="visibleKeybord = false"
           :rules="[
             (val) => val.length <= 250 || 'Please use maximum 250 characters',
           ]"
         >
           <template #counter>
-            <div class="q-mt-md">{{ newComment.length }} / 250</div>
+            <div class="row items-center">
+              <div class="q-mr-sm">{{ newComment.length }} / 250</div>
+              <q-btn
+                v-if="newComment.length > 0"
+                class="q-px-md"
+                no-caps
+                label="Post"
+                icon-right="mdi-send"
+                unelevated
+                rounded
+                color="primary"
+                @click="addComment(true)"
+                v-close-popup
+              />
+              <q-btn
+                v-else
+                class="q-px-md text-grey-7"
+                no-caps
+                label="Post"
+                icon-right="mdi-send"
+                unelevated
+                rounded
+                disable
+                color="grey-4"
+              />
+            </div>
           </template>
         </q-input>
       </q-card-section>
+      <div
+        :class="[
+          {
+            'visible-keyboard': visibleKeybord,
+            'hidden-keyboard': !visibleKeyboard,
+            'hidden-keyboard-dialog': !postingComment && !visibleKeybord,
+          },
+        ]"
+        style="width: 100%"
+      ></div>
     </q-card>
   </q-dialog>
 
@@ -531,9 +562,14 @@ const {
 const storyId = route.query.id;
 
 const visibleKeybord = ref(false);
+const postingComment = ref(false);
 // Define computed height based on the isExpanded value
 const scrollAreaHeight = computed(() =>
   visibleKeybord.value ? "50vh" : "83vh"
+);
+
+const keyboardAreaHeight = computed(() =>
+  visibleKeybord.value ? "35vh" : "2vh"
 );
 
 const commentBoxBackground = computed(() =>
@@ -618,14 +654,9 @@ const focusInput = () => {
   input.value && input.value.focus();
 };
 
-const addComment = async (keyboardState, postComment) => {
-  if (keyboardState !== "hide") {
-    visibleKeybord.value = true;
-  } else {
-    visibleKeybord.value = false;
-  }
-
+const addComment = async (postComment) => {
   if (postComment && newComment.value.trim().length > 0) {
+    postingComment.value = true;
     //const storyId = route.query.id;
     const owner = { ...user.value.user_metadata };
     await insertNewComment(storyId, owner, newComment.value).then(() => {
@@ -638,7 +669,11 @@ const addComment = async (keyboardState, postComment) => {
           visible.value = false;
         }, 300);
       });
+      postingComment.value = false;
     });
+  } else {
+    visibleKeybord.value = false;
+    postingComment.value = false;
   }
 };
 
@@ -794,6 +829,27 @@ const thumbStyle = ref({
 </script>
 
 <style>
+.hidden-keyboard-dialog {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  min-height: 1vh;
+}
+
+.hidden-keyboard {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  min-height: 35vh;
+}
+
+.visible-keyboard {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  min-height: 35vh;
+}
+
 .story-box {
   /* border: solid 1px green; */
   border-radius: 28px;

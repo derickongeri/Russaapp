@@ -9,6 +9,10 @@
     </q-btn>
   </div>
 
+  <div class="row q-mb-md q-px-md" style="width: 100%">
+    <div class="caption-text">Showing most recent first</div>
+  </div>
+
   <div class="horizontal-content q-my-lg">
     <q-scroll-area
       :thumb-style="thumbStyle"
@@ -22,28 +26,110 @@
           to="/createpost"
           v-ripple
         >
-          <div class="col-4" style="width: 100%">
+          <div class="col" style="width: 100%">
             <div class="row justify-between items-center" style="width: 100%">
               <div class="">Post a story</div>
-              <q-icon size="md" name="mdi-open-in-new" color="primary" />
+              <q-icon
+                size="md"
+                name="mdi-plus-circle-outline"
+                color="primary"
+              />
             </div>
           </div>
-          <div class="col"></div>
-          <div class="col-1 q-my-sm">
+          <div class="col caption-text q-my-sm">
             Share what's on your mind and engage with the community
           </div>
         </q-item>
         <q-item
           clickable
-          to="/readpost"
+          @click="goToStory(story.story_id)"
           v-ripple
-          v-for="n in 10"
-          :key="n"
-          class="column justify-between q-pa-md story-card read-story-card"
+          v-for="story in stories.slice(0, 10)"
+          :key="story.id"
+          :class="[
+            'column',
+            'text-grey-1',
+            'justify-between',
+            'q-pa-md',
+            'story-card',
+            {
+              'read-story-card': stories.indexOf(story) % 3 === 0,
+              'read-story-card-1': stories.indexOf(story) % 3 === 1,
+              'read-story-card-2': stories.indexOf(story) % 3 === 2,
+            },
+          ]"
         >
-          <div class="col-3">Title</div>
-          <div class="col">{{ lorem }}</div>
-          <div class="col-1">Author</div>
+          <div class="col">
+            <div class="row items-center text-grey-1">
+              <q-avatar size="sm" color="primary" text-color="white">
+                {{ story.user_name.charAt(0) || "A" }}</q-avatar
+              >
+              <div class="column">
+                <div
+                  :class="[
+                    'row',
+                    'q-px-md',
+                    'header-text',
+                    {
+                      'text-grey-8': stories.indexOf(story) % 3 === 0,
+                      'text-grey-3': stories.indexOf(story) % 3 === 1,
+                      'text-grey-9': stories.indexOf(story) % 3 === 2,
+                    },
+                  ]"
+                  style="font-size: 16px; font-weight: 700"
+                >
+                  {{ story.user_name }}
+                </div>
+                <q-space />
+                <div
+                  :class="[
+                    'caption-text',
+                    'q-px-md',
+                    {
+                      'text-grey-8': stories.indexOf(story) % 3 === 0,
+                      'text-grey-3': stories.indexOf(story) % 3 === 1,
+                      'text-grey-9': stories.indexOf(story) % 3 === 2,
+                    },
+                  ]"
+                  style="font-style: italic; font-size: 14px"
+                >
+                  {{ formatTime(story.created_at) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            :class="[
+              'col',
+              'caption-text',
+
+              {
+                'text-grey-8': stories.indexOf(story) % 3 === 0,
+                'text-grey-3': stories.indexOf(story) % 3 === 1,
+                'text-grey-9': stories.indexOf(story) % 3 === 2,
+              },
+            ]"
+            style="font-weight: 700"
+          >
+            {{ story.title }}
+          </div>
+          <div
+            :class="[
+              'col',
+              'caption-text',
+              {
+                'text-grey-8': stories.indexOf(story) % 3 === 0,
+                'text-grey-3': stories.indexOf(story) % 3 === 1,
+                'text-grey-9': stories.indexOf(story) % 3 === 2,
+              },
+            ]"
+          >
+            {{
+              story.body.length > 50
+                ? story.body.substring(0, 50) + "..."
+                : story.body
+            }}
+          </div>
         </q-item>
       </div>
     </q-scroll-area>
@@ -51,24 +137,59 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, watch } from "vue";
-
+import { defineComponent, ref, watch, onMounted } from "vue";
+import { useQuasar, QSpinnerHearts } from "quasar";
 import { useRouter } from "vue-router";
 import useSupabase from "src/boot/supabase";
+import setStories from "src/composables/stories";
 
+const $q = useQuasar();
 const router = useRouter();
-
 const { supabase } = useSupabase();
+const visible = ref(false);
+const { stories, fetchStories } = setStories();
 
-const lorem = ref(
-  "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatem totam, architecto cupiditate officia rerum, error dignissimos praesentium libero ab nemo."
-);
+// Format story time
+const formatTime = (createdAt) => {
+  const date = new Date(createdAt);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} mins ago`;
+  } else if (diffInMinutes < 1440) {
+    return `${Math.floor(diffInMinutes / 60)} hours ago`;
+  } else {
+    const options = { day: "2-digit", month: "short" };
+    if (now.getFullYear() === date.getFullYear()) {
+      return new Intl.DateTimeFormat("en-US", options).format(date);
+    } else {
+      options.year = "2-digit";
+      return new Intl.DateTimeFormat("en-US", options).format(date);
+    }
+  }
+};
 
 function goTo(val) {
   router.push({
     name: val,
   });
 }
+
+// Navigate to single story view
+const goToStory = (id) => {
+  router.push({ name: "readstory", query: { id } });
+};
+
+onMounted(() => {
+  let timer;
+  visible.value = true;
+  fetchStories().then(() => {
+    setTimeout(() => {
+      visible.value = false;
+    }, 300);
+  });
+});
 
 const thumbStyle = ref({
     right: "4px",

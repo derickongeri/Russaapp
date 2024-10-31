@@ -1,8 +1,8 @@
 // app global css in SCSS form
 
 @import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
-@import 'home';
-@import 'bubbles';
+@import "home";
+@import "bubbles";
 
 // .body {
 //   // for your app's header
@@ -276,10 +276,8 @@
 
   border-radius: 16px;
   // background-color: #6370121c;
-   background-color: #e7e7e781;
+  background-color: #e7e7e781;
 }
-
-
 
 .card-home {
   /* Ensure the element covers the entire viewport */
@@ -469,15 +467,47 @@
 .story-card {
   width: 50vw;
   height: 30vh;
-  border: solid 1px;
+  border: solid rgb(197, 197, 197) 1px;
   border-radius: 20px;
 }
 
 .add-story-card {
-  background-color: #6370121c;
-  border: solid 1px;
+  background-color: #63701200;
+  border: dashed rgb(197, 197, 197) 1px;
+}
+
+.read-story-card-1 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(250, 250, 250, 0)
+    ),
+    /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
+      url("~/src/assets/storiesbackground5.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.read-story-card-2 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.534),
+      rgba(250, 250, 250, 0.521)
+    ),
+    /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
+      url("~/src/assets/storiesbackground7.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 .read-story-card {
-  background-color: #0be881;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0),
+      rgba(250, 250, 250, 0)
+    ),
+    /* linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%), */
+      url("~/src/assets/storiesbackground6.jpg");
+  background-size: cover;
+  background-position: center;
 }
