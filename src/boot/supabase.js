@@ -8,7 +8,7 @@ const supabaseKey =
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-console.log("init supabase:", supabase);
+// console.log("init supabase:", supabase);
 
 // supabase.auth.onAuthStateChange((event, session) => {
 //   const { user } = userAuthUser();

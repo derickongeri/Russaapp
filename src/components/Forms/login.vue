@@ -47,10 +47,30 @@
       rounded
       color="primary"
       label="Login"
-      to="/meta/language"
       @click="handleLogin"
     />
   </div>
+
+  <q-dialog v-model="dialog" backdrop-filter="blur(4px)">
+    <q-card>
+      <q-card-section class="row items-center q-pb-none text-h6">
+        <div class="column items-center" style="width: 100%">
+          <div class="row items-center q-gutter-x-sm">
+            <div class="col">Login Failed</div>
+            <i class="fa-solid fa-ban" style="color: #f74c40"></i>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section>
+        Please check that your email and password are correct and try again.
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Ok" color="primary" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -77,7 +97,10 @@ const form = ref({
   password: "",
 });
 
+const dialog = ref(false);
+
 const getUserProfileByEmail = async (email) => {
+  console.log("executing");
   try {
     const { data, error } = await supabase
       .from("user_profiles")
@@ -122,16 +145,22 @@ const handleLogin = async () => {
       backgroundColor: "white",
       messageColor: "black",
     });
-    await login(form.value);
-    //notifySuccess("Login successfull!");
-    getUserProfileByEmail(user.value.email);
-    // hiding in 3s
+
+    await login(form.value).then(() => {
+      getUserProfileByEmail(user.value.email);
+    });
+
     timer = setTimeout(() => {
       $q.loading.hide();
       timer = void 0;
-    }, 3000);
+    }, 300);
   } catch (error) {
-    notifyError(error.message);
+    //notifyError(error.message);
+    dialog.value = true;
+    timer = setTimeout(() => {
+      $q.loading.hide();
+      timer = void 0;
+    }, 300);
   }
 };
 

@@ -31,8 +31,13 @@
           class="bg-transparent q-mb-md row items-center q-gutter-xs"
           style="position: absolute; bottom: 0%; min-width: 80%"
         >
-          <q-avatar size="56px" class="q-mb-sm">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          <q-avatar
+            size="56px"
+            class="q-mb-sm"
+            color="green-2"
+            text-color="white"
+          >
+            <i class="fa-regular fa-user" style="font-size: larger"></i>
           </q-avatar>
           <div class="col">
             <q-btn
@@ -45,7 +50,10 @@
               align="between"
             >
               <div class="column items-start justify-left">
-                <div class="" style="font-size: 1.75em">{{ username }}</div>
+                <div class="" style="font-size: 1.5em">
+                  {{ user.user_metadata.firstName }}
+                  {{ user.user_metadata.lastName }}
+                </div>
                 <div class="text-grey-7 text-caption" style="font-size: 1em">
                   Account Profile
                 </div>
@@ -57,7 +65,7 @@
       <div class="q-pa-md" style="max-width: 350px; margin-top: 150px">
         <q-list v-for="(link, index) in drawerLinks" :key="index">
           <q-separator class="bg-green-1 q-mx-md" />
-          <q-item class="q-my-sm" clickable :to="link.toPage">
+          <q-item class="q-my-sm" clickable @click="goToPage(link.toPage)">
             <q-item-section>
               <q-item-label
                 class="text-primary text-weight-bold head-text"
@@ -144,17 +152,18 @@
 
 <script setup>
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
-import { useQuasar } from "quasar";
+import { useRoute, useRouter } from "vue-router";
+import { Dialog, useQuasar } from "quasar";
 import { isUserOnboarded } from "src/utils/onboarding";
 import onboarding from "src/components/Reusables/onboarding.vue";
 import userAuthUser from "src/composables/userAuthUser";
 
-const { user } = userAuthUser();
+const { user, logout } = userAuthUser();
 
 const $q = useQuasar();
 
 const route = useRoute();
+const router = useRouter();
 
 const leftDrawerOpen = ref(false);
 
@@ -166,7 +175,7 @@ const drawerLinks = ref([
   {
     name: "My settings",
     caption: "birthday, common signs, health background",
-    toPage: "/meta/user/update",
+    toPage: "metaUpdate",
   },
   {
     name: "App settings",
@@ -182,15 +191,49 @@ const drawerLinks = ref([
   { name: "Share feedback", caption: "", toPage: "/feedback" },
   { name: "Terms and Conditions", caption: "", toPage: "/terms" },
   { name: "Privacy policy", caption: "", toPage: "/privacy" },
-  { name: "Log out", caption: "", toPage: "/logout" },
+  { name: "Log out", caption: "", toPage: "logout" },
 ]);
+
+function confirm() {
+  $q.dialog({
+    title: "Confirm Logout",
+    message: "You are about to log out. Are you sure you want to leave?",
+    cancel: true,
+    persistent: true,
+  })
+    .onOk(() => {
+      logout()
+      router.push({
+        name: 'auth'
+      })
+    })
+    .onOk(() => {
+      // console.log('>>>> second OK catcher')
+    })
+    .onCancel(() => {
+      // console.log('>>>> Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
+}
+
+function goToPage(val) {
+  if (val === "logout") {
+    confirm()
+  } else {
+    router.push({
+      name: val,
+    });
+  }
+}
 
 const onboarduser = computed(() => {
   return $q.localStorage.getItem("userOnboarded");
 });
 
 const username = computed(() => {
-  return user.value.user_metadata.firstName
+  return user.value.user_metadata.firstName;
 });
 
 // Computed property to get the title from the current route meta

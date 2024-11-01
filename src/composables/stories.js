@@ -148,6 +148,52 @@ export default function setStories() {
     }
   };
 
+  const reportComment = async (commentId, storyId) => {
+    try {
+      const { data, error } = await supabase
+        .from("story_comments")
+        .update({ reported: true })
+        .eq("comment_id", commentId)
+        .select("reported")
+        .single();
+
+      if (error) {
+        console.error("Error reporting story:", error.message);
+        return;
+      }
+
+      if (data.reported) {
+        console.log("story hass been reported"); // Update UI to reflect that the story has been reported
+        fetchComments(storyId);
+        // reportCommentDialog.value = !reportCommentDialog.value;
+        // dialogOpen.value = !dialogOpen.value;
+      }
+    } catch (err) {
+      console.error("Unexpected error reporting story:", err.message);
+    }
+  };
+
+  // Format story time
+  const formatTime = (createdAt) => {
+    const date = new Date(createdAt);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} mins ago`;
+    } else if (diffInMinutes < 1440) {
+      return `${Math.floor(diffInMinutes / 60)} hours ago`;
+    } else {
+      const options = { day: "2-digit", month: "short" };
+      if (now.getFullYear() === date.getFullYear()) {
+        return new Intl.DateTimeFormat("en-US", options).format(date);
+      } else {
+        options.year = "2-digit";
+        return new Intl.DateTimeFormat("en-US", options).format(date);
+      }
+    }
+  };
+
   return {
     stories,
     storyData,
@@ -158,5 +204,7 @@ export default function setStories() {
     insertNewComment,
     deleteComment,
     deleteStory,
+    reportComment,
+    formatTime,
   };
 }

@@ -9,7 +9,7 @@
           outlined
           flat
           v-model="form.firstName"
-          placeholder="Firatname"
+          placeholder="Firstname"
           lazy-rules
           :rules="[
             (val) => (val && val.length > 0) || $t('Field is required *'),
@@ -160,14 +160,40 @@
           to="/auth/login"
         />
       </div> -->
+
+  <q-dialog v-model="alert">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">Sign-Up Successful! 🎉</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        Thank you for signing up! A confirmation link has been sent to your
+        email {{ form.email }}. Please check your inbox to complete your registration.
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="OK"
+          color="primary"
+          @click="goTohomepage"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
 import { defineComponent, ref, onBeforeMount, computed, onMounted } from "vue";
+import { useQuasar, QSpinnerFacebook, QSpinnerHearts } from "quasar";
 import userAuthUser from "src/composables/userAuthUser";
 import useNotify from "src/composables/useNotify";
 import { useRouter } from "vue-router";
 import countriesData from "src/composables/countries.json";
+
+const $q = useQuasar();
 
 const router = useRouter();
 const { register } = userAuthUser();
@@ -205,22 +231,31 @@ const form = ref({
   isPwd = ref(true),
   model = ref(null),
   countries = ref([]),
-  options = ["Google", "Facebook", "Twitter", "Apple", "Oracle"];
+  alert = ref(false);
 
 const confirmedpassword = ref("");
 const visibleKeybord = ref(false);
 
 //method to handle login and redirect to dashboard
 const handleRegister = async () => {
+  let timer;
   if (confirmedpassword.value === form.value.password) {
     try {
+      $q.loading.show({
+        spinner: QSpinnerHearts,
+        spinnerColor: "primary",
+        message: "Setting user data",
+        customClass: "bg-grey-1 text-grey-9 spinner-box",
+        backgroundColor: "white",
+        messageColor: "black",
+      });
       await register(form.value);
       notifySuccess("Success");
-      router.push({
-        name: "home",
-        query: { email: form.value.email },
-        // path: "/dashboard"
-      });
+      alert.value = true;
+      timer = setTimeout(() => {
+        $q.loading.hide();
+        timer = void 0;
+      }, 300);
     } catch (error) {
       notifyError(`You are missing some required fields`);
     }
@@ -228,6 +263,12 @@ const handleRegister = async () => {
     notifyError(`Your passwords do not match`);
   }
 };
+
+function goTohomepage() {
+  router.push({
+    name: "home",
+  });
+}
 
 onMounted(() => {
   countries.value = getCountryNames(countriesData);
