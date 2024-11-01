@@ -11,8 +11,8 @@
               unelevated
               rounded
               color="primary"
-              label="New to the App - Sign Up"
-              @click="signup = true"
+              label="Login"
+              @click="login = true"
             />
           </div>
           <div class="row">
@@ -20,11 +20,11 @@
               no-caps
               size="lg"
               class="full-width bg-white"
-              outline
               rounded
+              outline
               color="primary"
-              label="I have an account - Login"
-              @click="login = true"
+              label="New to the app - Sign Up"
+              @click="signup = true"
             />
           </div>
         </div>

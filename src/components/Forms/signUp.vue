@@ -169,7 +169,8 @@
 
       <q-card-section class="q-pt-none">
         Thank you for signing up! A confirmation link has been sent to your
-        email {{ form.email }}. Please check your inbox to complete your registration.
+        email <b>{{ form.email }}</b
+        >. Please check your inbox to complete your registration.
       </q-card-section>
 
       <q-card-actions align="right">
@@ -249,13 +250,16 @@ const handleRegister = async () => {
         backgroundColor: "white",
         messageColor: "black",
       });
-      await register(form.value);
-      notifySuccess("Success");
-      alert.value = true;
-      timer = setTimeout(() => {
-        $q.loading.hide();
-        timer = void 0;
-      }, 300);
+      await register(form.value).then(() => {
+        router.push({
+          name: "verifyEmail",
+          query: { mail: form.value.email },
+        });
+        timer = setTimeout(() => {
+          $q.loading.hide();
+          timer = void 0;
+        }, 300);
+      });
     } catch (error) {
       notifyError(`You are missing some required fields`);
     }

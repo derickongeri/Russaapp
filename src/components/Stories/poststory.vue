@@ -1,72 +1,85 @@
 <template>
-  <div class="q-py-md" style="width: 100%">
-    <div class="row items-center q-gutter-x-sm">
-      <q-avatar v-if="shareAnonymously" color="secondary" text-color="white">
-        A
-      </q-avatar>
-      <q-avatar v-else color="green-2" text-color="white">{{
-        username.charAt(0)
-      }}</q-avatar>
-      <div>
-        <q-btn
-          size="sm"
-          no-caps
-          outline
-          rounded
-          color="primary"
-          :label="profilebtnLabel"
-          icon-right="mdi-chevron-down"
-          @click="open('bottom')"
-        />
+  <div class="inputs-container">
+    <div class="q-py-md" style="width: 100%">
+      <div class="row items-center q-gutter-x-sm">
+        <q-avatar v-if="shareAnonymously" color="secondary" text-color="white">
+          A
+        </q-avatar>
+        <q-avatar v-else color="green-2" text-color="white">{{
+          username.charAt(0)
+        }}</q-avatar>
+        <div>
+          <q-btn
+            size="sm"
+            no-caps
+            outline
+            rounded
+            color="primary"
+            :label="profilebtnLabel"
+            icon-right="mdi-chevron-down"
+            @click="open('bottom')"
+          />
+        </div>
+      </div>
+
+      <!-- <div class="row head-text q-mt-md">Headline</div>
+    <div class="caption-text q-my-sm">Short tile to summarise you story</div> -->
+      <q-input
+        class="q-ml-xl q-mt-md q-px-sm bg-grey-2"
+        style="border-radius: 10px"
+        v-model="story.title"
+        borderless
+        counter
+        placeholder="What's your story about? Write headline.."
+        :rules="[
+          (val) => val.length <= 100 || 'Please use maximum 250 characters',
+        ]"
+      >
+        <template #counter>
+          <div class="row items-center">
+            <div class="q-mr-sm">{{ story.title.length }} / 100</div>
+          </div>
+        </template>
+      </q-input>
+      <div
+        v-if="showError && !story.title.trim().length > 0"
+        class="caption-text q-ml-lg q-pl-lg text-red q-my-sm"
+      >
+        Please provide a title for your story*
       </div>
     </div>
 
-    <div class="row head-text q-mt-md">Headline</div>
-    <div class="caption-text q-my-sm">Short tile to summarise you story</div>
-    <q-input
-      class="story-box q-px-sm"
-      v-model="story.title"
-      borderless
-      placeholder="Tap to start typing"
-    />
-    <div
-      v-if="showError && !story.title.trim().length > 0"
-      class="caption-text text-red q-my-sm"
-    >
-      Please provide a title for your story*
+    <div class="q-py-md" style="width: 100%">
+      <!-- <div class="row head-text q-mb-sm">Your story</div> -->
+      <!-- <div class="caption-text q-my-sm">Short tile to summarise you story</div> -->
+      <q-input
+        class="q-ml-xl q-px-sm bg-grey-2"
+        style="border-radius: 10px; min-height: 20vh"
+        v-model="story.body"
+        borderless
+        counter
+        placeholder="Tap to start typing your story"
+        type="textarea"
+        :rules="[
+          (val) => val.length <= 500 || 'Please use maximum 250 characters',
+        ]"
+      >
+        <template #counter>
+          <div class="row items-center">
+            <div class="q-mr-sm">{{ story.body.length }} / 500</div>
+          </div>
+        </template>
+      </q-input>
+      <div
+        v-if="showError && !story.body.trim().length > 0"
+        class="caption-text q-ml-lg q-pl-lg text-red q-my-sm"
+      >
+        Story can't be empty*
+      </div>
     </div>
-  </div>
 
-  <div class="q-py-md" style="width: 100%">
-    <div class="row head-text q-mb-sm">Your story</div>
-    <!-- <div class="caption-text q-my-sm">Short tile to summarise you story</div> -->
-    <q-input
-      class="story-box q-px-sm"
-      v-model="story.body"
-      borderless
-      placeholder="Tap to start typing"
-      type="textarea"
-    />
-    <div
-      v-if="showError && !story.body.trim().length > 0"
-      class="caption-text text-red q-my-sm"
-    >
-      Story can't be empty*
-    </div>
-  </div>
-
-  <div class="row head-text q-mt-md">Tags</div>
-  <div class="caption-text q-my-sm">Make it easier to discover your story</div>
-
-  <q-btn
-    no-caps
-    outline
-    color="primary"
-    style="width: 100%; min-height: 10vh; border-radius: 8px"
-    @click="openTagsDialog('bottom')"
-  >
-    <div class="column q-pa-md">
-      <div class="col">
+    <div class="column q-ml-lg q-pa-md">
+      <div class="q-px-xs">
         <q-chip
           size=""
           outline
@@ -78,34 +91,70 @@
         >
           {{ chip.label }}
         </q-chip>
+        <q-chip
+          v-if="story.tags.length > 0"
+          clickable
+          @click="openTagsDialog('bottom')"
+          color="primary"
+          text-color="white"
+          outline
+        >
+          ...show more
+        </q-chip>
+        <q-chip
+          v-else
+          clickable
+          @click="openTagsDialog('bottom')"
+          color="primary"
+          text-color="white"
+          outline
+          icon-right="mdi-plus-circle"
+        >
+          Add tags
+        </q-chip>
       </div>
+      <!-- <q-btn no-caps outline color="primary" style=""></q-btn> -->
 
-      <div class="row text-caption justify-center q-pt-md" style="width: 100%">
-        <div class="row">Tap to add tags</div>
-      </div>
+      <!-- <div class="row text-caption justify-center q-pt-md" style="width: 100%">
+      <div class="row">Tap to add tags</div>
+    </div> -->
     </div>
-  </q-btn>
 
-  <div
-    v-if="showError && !story.tags.length > 0"
-    class="caption-text text-red q-my-sm"
-  >
-    Please select atleas one tag*
-  </div>
+    <div
+      v-if="showError && !story.tags.length > 0"
+      class="caption-text q-ml-lg q-pl-lg text-red q-my-sm"
+    >
+      Please select atleas one tag*
+    </div>
 
-  <div style="width: 100%; position: fixed; bottom: 0%;left:0%">
-    <div class="row q-py-md items-center justify-center">
-      <q-btn
-        no-caps
-        class="tab-text"
-        size="lg"
-        unelevated
-        rounded
-        color="primary"
-        label="Post"
-        @click="postStory"
-        style="width: 80%"
-      />
+    <div style="width: 100%">
+      <div class="row q-py-md items-center justify-center">
+        <q-space />
+        <q-btn
+          :disabled="!isStoryValid"
+          no-caps
+          class="tab-text q-px-md"
+          size="md"
+          unelevated
+          rounded
+          color="primary"
+          label="Post story"
+          icon-right="mdi-send"
+          @click="postStory"
+        />
+        <!-- <q-btn
+          v-else
+          no-caps
+          class="tab-text q-px-md text-grey-7"
+          size="md"
+          unelevated
+          rounded
+          color="grey-4"
+          label="Post story"
+          icon-right="mdi-send"
+          @click="postStory"
+        /> -->
+      </div>
     </div>
   </div>
 
@@ -254,9 +303,9 @@ watch(selectedTags, (val) => {
 const postStory = async () => {
   let userName;
   if (shareAnonymously.value) {
-    userName = 'Anonymous'
+    userName = "Anonymous";
   } else {
-    userName = user.value.user_metadata.firstName
+    userName = user.value.user_metadata.firstName;
   }
   if (isStoryValid.value) {
     try {

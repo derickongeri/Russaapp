@@ -38,6 +38,11 @@ const routes = [
         name: "onboard",
         component: () => import("pages/user/onboarding.vue"),
       },
+      {
+        path: "/verifyEmail",
+        name: "verifyEmail",
+        component: () => import("pages/user/verifyEmail.vue"),
+      },
     ],
   },
   {
