@@ -1,9 +1,5 @@
 <template>
-  <div
-    v-if="!visible"
-    class="stories-container-bg"
-    style="min-height: 96vh; width: 100vw"
-  >
+  <div class="stories-container-bg" style="min-height: 96vh; width: 100vw">
     <q-scroll-area
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
@@ -133,6 +129,97 @@
         </div>
 
         <div v-if="showComments" class="">
+          <div v-if="visible" class="row">
+            <div class="col-1">
+              <q-item class="q-pt-lg">
+                <q-item-section top avatar>
+                  <q-avatar size="sm" color="primary" text-color="white"
+                    >D</q-avatar
+                  >
+                </q-item-section>
+              </q-item>
+            </div>
+            <div class="col">
+              <q-card
+                flat
+                class="q-ma-md q-pt-xs bg-white"
+                style="border-radius: 10px 10px 10px 10px"
+              >
+                <q-item>
+                  <div class="triangle triangle-0"></div>
+                  <q-item-section>
+                    <div class="row items-center">
+                      <div
+                        class="header-text text-primary"
+                        style="font-size: 16px; font-weight: normal"
+                      >
+                        {{ user.user_metadata.firstName }}
+                        {{ user.user_metadata.lastName }}
+                      </div>
+                      <q-space />
+                      <div
+                        class="caption-text"
+                        style="font-style: italic; font-size: 16px"
+                      >
+                        sending ...
+                      </div>
+                    </div>
+
+                    <div
+                      class="q-py-md header-text text-grey-9"
+                      style="
+                        font-size: 20px;
+                        font-weight: 300;
+                        line-height: 1.5em;
+                        width: 100%;
+                      "
+                    >
+                      {{ newComment }}
+                    </div>
+
+                    <!-- <div class="row items-center" style="font-size: 16px">
+                        <q-space />
+                        <q-btn
+                          v-if="comment.owner.email === user.email"
+                          no-caps
+                          flat
+                          dense
+                          size=""
+                          color="primary"
+                          @click="
+                            OpenDeleteItemDialog('comment', comment.comment_id)
+                          "
+                        >
+                          <q-icon
+                            size="xs"
+                            name="mdi-delete-forever-outline"
+                            color="primary"
+                          />
+                          <div class="q-px-sm">Delete</div>
+                        </q-btn>
+                        <q-btn
+                          v-else
+                          no-caps
+                          flat
+                          size=""
+                          color="primary"
+                          @click="
+                            openDialog('bottom', 'comment', comment.comment_id)
+                          "
+                        >
+                          <div class="q-px-sm">Report</div>
+                          <q-icon
+                            size="xs"
+                            name="mdi-chat-alert-outline"
+                            color="primary"
+                          />
+                        </q-btn>
+                      </div> -->
+                  </q-item-section>
+                </q-item>
+              </q-card>
+            </div>
+          </div>
           <q-list v-for="comment in comments" :key="comment.id">
             <div class="row">
               <div class="col-1">
@@ -363,7 +450,6 @@
           {
             'visible-keyboard': visibleKeybord,
             'hidden-keyboard': !visibleKeyboard,
-            'hidden-keyboard-dialog': !postingComment && !visibleKeybord,
           },
         ]"
         style="width: 100%"
@@ -526,13 +612,13 @@
     </q-card>
   </q-dialog>
 
-  <q-inner-loading
+  <!-- <q-inner-loading
     style="width: 100%; height: 100vh"
     class="bg-white"
     :showing="visible"
   >
     <q-spinner-hearts size="50px" color="primary" />
-  </q-inner-loading>
+  </q-inner-loading> -->
 </template>
 
 <script setup>
@@ -555,17 +641,17 @@ const {
   comments,
   fetchStory,
   fetchComments,
+  subscribeToMessages,
   insertNewComment,
   deleteComment,
   deleteStory,
   reportComment,
-  formatTime
+  formatTime,
 } = setStories();
 
 const storyId = route.query.id;
 
 const visibleKeybord = ref(false);
-const postingComment = ref(false);
 // Define computed height based on the isExpanded value
 const scrollAreaHeight = computed(() =>
   visibleKeybord.value ? "50vh" : "83vh"
@@ -659,24 +745,21 @@ const focusInput = () => {
 
 const addComment = async (postComment) => {
   if (postComment && newComment.value.trim().length > 0) {
-    postingComment.value = true;
     //const storyId = route.query.id;
+    visible.value = true;
     const owner = { ...user.value.user_metadata };
     await insertNewComment(storyId, owner, newComment.value).then(() => {
-      newComment.value = "";
       let timer;
-      visible.value = true;
       fetchStory(storyId).then(() => {
         fetchComments(storyId);
+        visible.value = false;
         setTimeout(() => {
-          visible.value = false;
-        }, 300);
+          newComment.value = "";
+        }, 0);
       });
-      postingComment.value = false;
     });
   } else {
     visibleKeybord.value = false;
-    postingComment.value = false;
   }
 };
 
@@ -764,6 +847,7 @@ onMounted(() => {
       incrementViews();
     }, 10000);
   }); // Fetch the story when the component is mounted
+  subscribeToMessages(route.query.id)
 });
 
 onBeforeUnmount(() => {

@@ -112,6 +112,40 @@ export default function setStories() {
     }
   };
 
+  // Subscribe to new messages
+  const subscribeToMessages = (storyId) => {
+    supabase
+      .channel("public:story_comments")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "story_comments" },
+        (payload) => {
+          console.log(payload);
+
+          if (payload.eventType === "INSERT") {
+            if (payload.new.story_id === storyId) {
+              comments.value.unshift(payload.new);
+            } // Add new message to the list
+          } else if (payload.eventType === "UPDATE") {
+            const index = messages.value.findIndex(
+              (msg) => msg.id === payload.old.id
+            );
+            if (index !== -1) {
+              messages.value[index] = payload.new; // Update message in the list
+            }
+          } else if (payload.eventType === "DELETE") {
+            comments.value = comments.value.filter(
+              (msg) => msg.id !== payload.old.id
+            );
+
+          }
+          storyData.value = fetchStory(storyId);
+          //messages.value.push(payload.new); // Add new message to the list
+        }
+      )
+      .subscribe();
+  };
+
   const deleteComment = async (commentId, storyId) => {
     const { error: deleteError } = await supabase
       .from("story_comments")
@@ -206,5 +240,6 @@ export default function setStories() {
     deleteStory,
     reportComment,
     formatTime,
+    subscribeToMessages,
   };
 }
