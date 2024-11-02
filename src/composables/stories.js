@@ -112,19 +112,56 @@ export default function setStories() {
     }
   };
 
+  const updateStory = async (storyId) => {
+    const { data, error } = await supabase
+      .from("user_stories")
+      .select("*")
+      .eq("story_id", storyId)
+      .single();
+
+    storyData.value.comments = data.comments;
+  };
+
   // Subscribe to new messages
-  const subscribeToMessages = (storyId) => {
+  const subscribeToStory = async (storyId) => {
+    supabase
+      .channel("public:user_stories")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "user_stories" },
+        (payload) => {
+
+          if (payload.eventType === "INSERT") {
+            stories.value.unshift(payload.new);
+          } else if (payload.eventType === "UPDATE") {
+            storyData.value.comments = payload.new.comments
+            storyData.value.views = payload.new.views
+          } else if (payload.eventType === "DELETE") {
+
+          }
+          // const newStoryData = fetchStory(storyId);
+          // storyData.value.comments = newStoryData.comments
+
+          //messages.value.push(payload.new); // Add new message to the list
+        }
+      )
+      .subscribe();
+  };
+
+  // Subscribe to new messages
+  const subscribeToMessages = async (storyId) => {
     supabase
       .channel("public:story_comments")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "story_comments" },
         (payload) => {
-          console.log(payload);
+          // console.log(payload);
 
           if (payload.eventType === "INSERT") {
             if (payload.new.story_id === storyId) {
               comments.value.unshift(payload.new);
+              // updateStory(storyId);
             } // Add new message to the list
           } else if (payload.eventType === "UPDATE") {
             const index = messages.value.findIndex(
@@ -137,9 +174,10 @@ export default function setStories() {
             comments.value = comments.value.filter(
               (msg) => msg.id !== payload.old.id
             );
-
           }
-          storyData.value = fetchStory(storyId);
+          // const newStoryData = fetchStory(storyId);
+          // storyData.value.comments = newStoryData.comments
+
           //messages.value.push(payload.new); // Add new message to the list
         }
       )
@@ -241,5 +279,6 @@ export default function setStories() {
     reportComment,
     formatTime,
     subscribeToMessages,
+    subscribeToStory,
   };
 }

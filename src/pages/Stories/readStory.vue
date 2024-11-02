@@ -642,6 +642,7 @@ const {
   fetchStory,
   fetchComments,
   subscribeToMessages,
+  subscribeToStory,
   insertNewComment,
   deleteComment,
   deleteStory,
@@ -848,6 +849,7 @@ onMounted(() => {
     }, 10000);
   }); // Fetch the story when the component is mounted
   subscribeToMessages(route.query.id)
+  subscribeToStory(route.query.id)
 });
 
 onBeforeUnmount(() => {
