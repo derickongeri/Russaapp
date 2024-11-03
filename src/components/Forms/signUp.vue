@@ -161,7 +161,68 @@
         />
       </div> -->
 
-  <q-dialog v-model="alert">
+  <q-dialog v-model="alert" position="bottom" backdrop-filter="blur(4px)">
+    <div
+      class="column items-center bg-white justify-center body-text"
+      style="min-height: 100vh; min-width: 100vw; border-radius: 0px"
+    >
+      <div class="" style="width: 100%; height: 60%">
+        <div
+          class="row items-center justify-center q-mb-lg"
+          style="width: 100%"
+        >
+          <div
+            class="comumn justify-center items-center bg-lime-1"
+            style="border-radius: 16px"
+          >
+            <div class="q-pa-lg">
+              <q-icon
+                name="mdi-email-check"
+                color="green-3"
+                size="96px"
+              ></q-icon>
+            </div>
+          </div>
+        </div>
+        <div class="row items-center justify-center header-text text-grey-9">
+          Sign-Up Successful! 🎉
+        </div>
+        <div class="row items-center justify-center caption-text">
+          <div
+            class="text-center q-py-md"
+            style="width: 84%; font-size: 20px; margin: auto"
+          >
+            To complete your registration, A
+            confirmation link has been sent to your email
+            <b>{{ form.email }}</b>
+          </div>
+        </div>
+        <div class="row q-my-lg items-center justify-center">
+          <q-btn
+            style="border-radius: 10px; min-width: 60%"
+            class="q-px-lg"
+            size="lg"
+            unelevated
+            label="Open email app"
+            @click="openMailApp"
+            color="primary"
+            no-caps
+          ></q-btn>
+        </div>
+      </div>
+      <div
+        class="text-center"
+        style="width: 100%; height: 10vh; position: fixed; bottom: 0%"
+      >
+        <div class="text-center" style="width: 84%; margin: auto">
+          Did not receive the email? Check your spam filter, or try another
+          email address
+        </div>
+      </div>
+    </div>
+  </q-dialog>
+
+  <!-- <q-dialog v-model="alert">
     <q-card>
       <q-card-section>
         <div class="text-h6">Sign-Up Successful! 🎉</div>
@@ -183,7 +244,7 @@
         />
       </q-card-actions>
     </q-card>
-  </q-dialog>
+  </q-dialog> -->
 </template>
 
 <script setup>
@@ -251,10 +312,7 @@ const handleRegister = async () => {
         messageColor: "black",
       });
       await register(form.value).then(() => {
-        router.push({
-          name: "verifyEmail",
-          query: { mail: form.value.email },
-        });
+        alert.value = true;
         timer = setTimeout(() => {
           $q.loading.hide();
           timer = void 0;
@@ -268,10 +326,9 @@ const handleRegister = async () => {
   }
 };
 
-function goTohomepage() {
-  router.push({
-    name: "home",
-  });
+function openMailApp() {
+  const mailtoLink = "mailto:";
+  window.location.href = mailtoLink;
 }
 
 onMounted(() => {

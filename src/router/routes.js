@@ -55,6 +55,11 @@ const routes = [
         component: () => import("pages/user/indexPage.vue"),
       },
       {
+        path: "/resetpassword",
+        name: "resetpassword",
+        component: () => import("pages/user/resetpassword.vue"),
+      },
+      {
         path: "/meta/language",
         name: "lang",
         component: () => import("pages/user/languageSelection.vue"),

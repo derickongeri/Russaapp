@@ -5,13 +5,16 @@ const user = ref(null);
 
 export default function userAuthUser() {
   const { supabase } = useSupabase();
-  const baseUrl = "http://rusaapp.com/#/login";
+  const baseUrl = "http://rusaapp.com/#/";
   // const baseUrl = "http://localhost:9000/#/onboarding/";
 
-  const login = async ({ email, password }) => {
+  const login = async ({ email, password }, rememberMe) => {
     const response = await supabase.auth.signInWithPassword({
       email,
       password,
+      options: {
+        shouldPersist: rememberMe, // Persist session if "Remember Me" is checked
+      },
     });
     user.value = response.data.user;
     console.log(user.value);
@@ -31,8 +34,29 @@ export default function userAuthUser() {
     if (error) throw error;
   };
 
-  const isLoggedIn = () => {
-    return !!user.value;
+  // const isLoggedIn = () => {
+  //   return !!user.value
+  // }
+  const rememberUser = async () => {
+    const {
+      data
+    } = await supabase.auth.getSession();
+
+    console.log(data)
+
+    if (data.session && data.session.user) {
+      console.log('inside condition', data.session.user)
+      user.value = data.session.user
+      return data.session.user
+    }
+  };
+
+  const isLoggedIn = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session && data.session.user) {
+      user.value = data.session.user;
+    }
+    return data.session !== null;
   };
 
   const register = async ({ email, password, ...meta }) => {
@@ -42,7 +66,7 @@ export default function userAuthUser() {
       password: password,
       options: {
         data: meta,
-        emailRedirectTo: `${baseUrl}`,
+        emailRedirectTo: `${baseUrl}/auth/`,
       },
     });
     if (error) throw error;
@@ -57,7 +81,7 @@ export default function userAuthUser() {
 
   const sendPasswordRestEmail = async (email) => {
     const { user, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${baseUrl}update-password`,
+      redirectTo: `${baseUrl}/resetpassword/`,
     });
     if (error) throw error;
     return user;
@@ -81,5 +105,6 @@ export default function userAuthUser() {
     update,
     sendPasswordRestEmail,
     updateUserPassword,
+    rememberUser
   };
 }

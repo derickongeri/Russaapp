@@ -51,8 +51,8 @@
             >
               <div class="column items-start justify-left">
                 <div class="" style="font-size: 1.5em">
-                  {{ user.user_metadata.firstName }}
-                  {{ user.user_metadata.lastName }}
+                  {{ userData?.firstName || "" }}
+                  {{ userData?.lastName || "" }}
                 </div>
                 <div class="text-grey-7 text-caption" style="font-size: 1em">
                   Account Profile
@@ -151,14 +151,21 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  watch,
+  onBeforeMount,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Dialog, useQuasar } from "quasar";
 import { isUserOnboarded } from "src/utils/onboarding";
 import onboarding from "src/components/Reusables/onboarding.vue";
 import userAuthUser from "src/composables/userAuthUser";
 
-const { user, logout } = userAuthUser();
+const { user, logout, isLoggedIn, rememberUser } = userAuthUser();
 
 const $q = useQuasar();
 
@@ -202,10 +209,10 @@ function confirm() {
     persistent: true,
   })
     .onOk(() => {
-      logout()
+      logout();
       router.push({
-        name: 'auth'
-      })
+        name: "auth",
+      });
     })
     .onOk(() => {
       // console.log('>>>> second OK catcher')
@@ -220,7 +227,7 @@ function confirm() {
 
 function goToPage(val) {
   if (val === "logout") {
-    confirm()
+    confirm();
   } else {
     router.push({
       name: val,
@@ -232,9 +239,11 @@ const onboarduser = computed(() => {
   return $q.localStorage.getItem("userOnboarded");
 });
 
-const username = computed(() => {
-  return user.value.user_metadata.firstName;
-});
+// const username = computed(() => {
+//   return user.value.user_metadata.firstName;
+// });
+
+const userData = ref(null);
 
 // Computed property to get the title from the current route meta
 const currentRouteTitle = computed(() => {
@@ -244,4 +253,12 @@ const currentRouteTitle = computed(() => {
 const getIcon = (to, filledIcon, outlinedIcon) => {
   return route.path === to ? filledIcon : outlinedIcon;
 };
+
+onBeforeMount(() => {
+  if (isLoggedIn) {
+    rememberUser().then(() => {
+      userData.value = user.value.user_metadata;
+    });
+  }
+});
 </script>

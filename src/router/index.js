@@ -41,7 +41,7 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to) => {
     const $q = useQuasar();
-    const { isLoggedIn } = userAuthUser();
+    const { isLoggedIn, rememberUser } = userAuthUser();
     const onboarded = $q.localStorage.getItem("userOnboarded") === "true";
 
     console.log(onboarded);
@@ -60,7 +60,7 @@ export default route(function (/* { store, ssrContext } */) {
     ) {
       // Redirect to the login/auth page if the user is not logged in
       return { name: "auth" };
-    }
+    } 
   });
 
   return Router;

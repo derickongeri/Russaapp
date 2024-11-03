@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-none">
     <div class="row q-pt-md q-px-md q-my-md head-text" style="width: 100%">
-      Welcome back, {{ username }}
+      Welcome back, {{ userData?.firstName || "" }}
     </div>
 
     <!-- <div class="q-pa-md q-my-lg header-div" id="quick-actions">
@@ -283,7 +283,7 @@
       </div>
     </div> -->
 
-    <stories/>
+    <stories />
 
     <q-separator insert />
 
@@ -357,18 +357,26 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, watch, computed } from "vue";
+import { defineComponent, ref, watch, computed, onMounted } from "vue";
 import carouselContent from "src/components/homepage/carousel.vue";
 import userAuthUser from "src/composables/userAuthUser";
 import stories from "src/components/Reusables/storiesSlides.vue";
 import { useRouter } from "vue-router";
+import { useMetaStore } from "src/stores/userMeta";
+import { useSignsStore } from "src/stores/signs";
+import useSupabase from "src/boot/supabase";
 
 const router = useRouter();
+const { supabase } = useSupabase();
 
-const { user } = userAuthUser();
-const username = computed(() => {
-  return user.value.user_metadata.firstName;
-});
+const { user, isLoggedIn, rememberUser } = userAuthUser();
+const store = useMetaStore();
+const signsStore = useSignsStore();
+// const username = computed(() => {
+//   return user.value.user_metadata.firstName;
+// });
+
+const userData = ref(null);
 
 const journalList = ref([
   {
@@ -444,6 +452,49 @@ const thumbStyle = ref({
     width: "9px",
     opacity: 0.2,
   });
+
+const getUserProfileByEmail = async (email) => {
+  console.log("executing");
+  try {
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .select("*")
+      .eq("email", email) // Filter by email
+      .single(); // We use .single() to get a single row
+
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching user profile:", error.message);
+    } else if (error && error.code === "PGRST116") {
+      router.push({
+        name: "lang",
+      });
+    } else {
+      router.push({
+        name: "home",
+      });
+    }
+
+    signsStore.addSignsToUserSigns(data.frequent_signs);
+    store.addHealthCondition(data.health_info);
+    store.addPhysicalInfo(data.physical_info);
+
+    console.log("User profile:", data);
+
+    return data;
+  } catch (err) {
+    console.error("Error:", err.message);
+    return null;
+  }
+};
+
+onMounted(() => {
+  if (isLoggedIn) {
+    rememberUser().then(() => {
+      userData.value = user.value.user_metadata;
+      getUserProfileByEmail(user.value.email);
+    });
+  }
+});
 </script>
 
 <style lang="scss">
