@@ -5,7 +5,9 @@ const user = ref(null);
 
 export default function userAuthUser() {
   const { supabase } = useSupabase();
-  const baseUrl = "http://rusaapp.com/#/";
+  const baseUrl = "https://rusaapp.com/#/";
+  const resetpasswordUrl = `${baseUrl}resetpassword`
+  const confirmSingupUrl = `${baseUrl}auth`;
   // const baseUrl = "http://localhost:9000/#/onboarding/";
 
   const login = async ({ email, password }, rememberMe) => {
@@ -66,7 +68,7 @@ export default function userAuthUser() {
       password: password,
       options: {
         data: meta,
-        emailRedirectTo: `${baseUrl}/auth/`,
+        emailRedirectTo: confirmSingupUrl,
       },
     });
     if (error) throw error;
@@ -81,7 +83,7 @@ export default function userAuthUser() {
 
   const sendPasswordRestEmail = async (email) => {
     const { user, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${baseUrl}/resetpassword/`,
+      redirectTo: resetpasswordUrl,
     });
     if (error) throw error;
     return user;
