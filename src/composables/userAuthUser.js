@@ -6,8 +6,8 @@ const user = ref(null);
 export default function userAuthUser() {
   const { supabase } = useSupabase();
   const baseUrl = "https://rusaapp.com/#/";
-  const resetpasswordUrl = `${baseUrl}resetpassword`
-  const confirmSingupUrl = `${baseUrl}auth`;
+  const resetpasswordUrl = `https://rusaapp.com/#/resetpassword/`;
+  const confirmSingupUrl = `https://rusaapp.com/#/auth/`;
   // const baseUrl = "http://localhost:9000/#/onboarding/";
 
   const login = async ({ email, password }, rememberMe) => {
