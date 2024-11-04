@@ -37,7 +37,7 @@
               <q-space />
               <div class="text-h5 q-pl-md">Sign Up</div>
               <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
+              <q-btn id="close-signup" icon="close" flat round dense v-close-popup />
             </q-card-section>
 
             <q-card-section>

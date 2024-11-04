@@ -125,6 +125,19 @@
   </q-dialog>
 
   <q-dialog v-model="alert" position="bottom" backdrop-filter="blur(4px)">
+    <div class="text-center" style="width: 100%; position: fixed; top: 4%">
+      <div class="row">
+        <q-btn
+          label="Back"
+          :ripple="false"
+          flat
+          no-caps
+          icon="mdi-arrow-left"
+          @click="resetPassword = !resetPassword"
+          v-close-popup
+        ></q-btn>
+      </div>
+    </div>
     <div
       class="column items-center bg-white justify-center body-text"
       style="min-height: 100vh; min-width: 100vw; border-radius: 0px"

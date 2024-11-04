@@ -1,27 +1,125 @@
 <template>
   <q-page class="text-body body">
     <div class="signup-page">
+      <q-dialog
+        v-model="dialog"
+        transition-show="slide-left"
+        position="bottom"
+        backdrop-filter="blur(4px)"
+      >
+        <div class="text-center" style="width: 100%; position: fixed; top: 4%">
+          <div class="row">
+            <q-btn
+              label="Back"
+              :ripple="false"
+              flat
+              no-caps
+              icon="mdi-arrow-left"
+              @click="toLogin()"
+              v-close-popup
+            ></q-btn>
+          </div>
+        </div>
 
+        <div
+          class="column items-center bg-white body-text"
+          style="min-height: 100vh; min-width: 100vw; border-radius: 0px"
+        >
+          <div class="" style="width: 100%; height: 60%; margin-top: 25%">
+            <div class="row q-px-md items-center header-text text-grey-9">
+              Create new password
+            </div>
 
-      <q-dialog v-model="dialog" backdrop-filter="blur(4px)">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none text-h6">
-            <div class="column items-center" style="width: 100%">
-              <div class="row items-center q-gutter-x-sm">
-                <div class="col">Login Failed</div>
-                <i class="fa-solid fa-ban" style="color: #f74c40"></i>
+            <div
+              class="row q-px-md q-mt-md items-center caption-text text-grey-9"
+            >
+              Your new password must be different from previous used passwords.
+            </div>
+
+            <div class="q-px-md q-mt-md" style="min-width: 100vw">
+              <div>
+                <div class="row form-text text-primary">New password</div>
+                <div class="row q-pt-md q-gutter-sm">
+                  <div class="col">
+                    <q-input
+                      outlined
+                      flat
+                      v-model="form.password"
+                      :type="isPwd ? 'password' : 'text'"
+                      lazy-rules
+                      :rules="[
+                        (val) => (val && val.length > 0) || $t('required'),
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon
+                          :name="isPwd ? 'visibility_off' : 'visibility'"
+                          class="cursor-pointer"
+                          @click="isPwd = !isPwd"
+                        /> </template
+                    ></q-input>
+                  </div>
+                </div>
               </div>
             </div>
-          </q-card-section>
-
-          <q-card-section>
-            Please check that your email and password are correct and try again.
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat label="Ok" color="primary" v-close-popup />
-          </q-card-actions>
-        </q-card>
+            <div class="q-px-md" style="min-width: 100vw">
+              <div>
+                <div class="row form-text text-primary">Confrim password</div>
+                <div class="row q-pt-md q-gutter-sm">
+                  <div class="col">
+                    <q-input
+                      outlined
+                      flat
+                      v-model="confirmedpassword"
+                      :type="isPwd ? 'password' : 'text'"
+                      lazy-rules
+                      :rules="[
+                        (val) =>
+                          (val && val.length > 0) || $t('Field is required *'),
+                        (val) =>
+                          (val && val.length > 0 && val !== password) ||
+                          $t('Passwords do not match*'),
+                      ]"
+                      @focus="visibleKeybord = true"
+                      @blur="visibleKeybord = false"
+                    >
+                      <template v-slot:append>
+                        <q-icon
+                          :name="isPwd ? 'visibility_off' : 'visibility'"
+                          class="cursor-pointer"
+                          @click="isPwd = !isPwd"
+                        /> </template
+                      ><template v-slot:hint>
+                        Both passwords must match
+                      </template></q-input
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row q-my-lg q-px-md items-center justify-center">
+              <q-btn
+                style="border-radius: 10px; min-width: 100%"
+                class="q-px-lg"
+                size="lg"
+                unelevated
+                label="Reset Password"
+                @click="updatePassword"
+                color="primary"
+                no-caps
+              ></q-btn>
+            </div>
+          </div>
+          <!-- <div
+            class="text-center"
+            style="width: 100%; height: 10vh; position: fixed; bottom: 0%"
+          >
+            <div class="text-center" style="width: 84%; margin: auto">
+              Did not receive the email? Check your spam filter, or try another
+              email address
+            </div>
+          </div> -->
+        </div>
       </q-dialog>
     </div>
   </q-page>
@@ -43,7 +141,7 @@ const signsStore = useSignsStore();
 
 const router = useRouter();
 const { supabase } = useSupabase();
-const { login, isLoggedIn, user } = userAuthUser();
+const { updateUserPassword } = userAuthUser();
 const { notifyError, notifySuccess } = useNotify();
 
 const form = ref({
@@ -51,79 +149,34 @@ const form = ref({
   password: "",
 });
 
-const dialog = ref(false);
+const confirmedpassword = ref("");
 
-const getUserProfileByEmail = async (email) => {
-  console.log("executing");
-  try {
-    const { data, error } = await supabase
-      .from("user_profiles")
-      .select("*")
-      .eq("email", email) // Filter by email
-      .single(); // We use .single() to get a single row
-
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching user profile:", error.message);
-    } else if (error && error.code === "PGRST116") {
-      router.push({
-        name: "lang",
-      });
-    } else {
-      router.push({
-        name: "home",
-      });
-    }
-
-    signsStore.addSignsToUserSigns(data.frequent_signs);
-    store.addHealthCondition(data.health_info);
-    store.addPhysicalInfo(data.physical_info);
-
-    console.log("User profile:", data);
-
-    return data;
-  } catch (err) {
-    console.error("Error:", err.message);
-    return null;
-  }
-};
-
-//method to handle login and redirect to dashboard
-const handleLogin = async () => {
-  let timer;
-  try {
-    $q.loading.show({
-      spinner: QSpinnerHearts,
-      spinnerColor: "primary",
-      message: "Setting user data",
-      customClass: "bg-grey-1 text-grey-9 spinner-box",
-      backgroundColor: "white",
-      messageColor: "black",
-    });
-
-    await login(form.value).then(() => {
-      getUserProfileByEmail(user.value.email);
-    });
-
-    timer = setTimeout(() => {
-      $q.loading.hide();
-      timer = void 0;
-    }, 300);
-  } catch (error) {
-    //notifyError(error.message);
-    dialog.value = true;
-    timer = setTimeout(() => {
-      $q.loading.hide();
-      timer = void 0;
-    }, 300);
-  }
-};
+const dialog = ref(true);
 
 const isValid = computed(
-  () => form.value.password && form.value.password.length > 0
+  () =>
+    form.value.password &&
+    form.value.password.length > 0 &&
+    form.value.password === confirmedpassword.value
 );
+
+const updatePassword = () => {
+  if (isValid.value) {
+    console.log('resetting password')
+    updateUserPassword(form.password).then(() => {
+      router.push({ name: "auth" });
+    });
+  }
+};
 
 const rememberMe = ref(false);
 const isPwd = ref(true);
+
+function toLogin() {
+  router.push({
+    name: "auth",
+  });
+}
 </script>
 
 <style>

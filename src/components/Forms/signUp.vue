@@ -87,6 +87,9 @@
           lazy-rules
           :rules="[
             (val) => (val && val.length > 0) || $t('Field is required *'),
+            (val) =>
+              (val && val.length > 0 && val !== password) ||
+              $t('Passwords do not match*'),
           ]"
         >
           <template v-slot:append>
@@ -114,6 +117,9 @@
           lazy-rules
           :rules="[
             (val) => (val && val.length > 0) || $t('Field is required *'),
+            (val) =>
+              (val && val.length > 0 && val !== password) ||
+              $t('Passwords do not match*'),
           ]"
           @focus="visibleKeybord = true"
           @blur="visibleKeybord = false"
@@ -148,20 +154,21 @@
       @click="handleRegister"
     />
   </div>
-  <!-- <div class="row">
-        <q-btn
-          no-caps
-          size="lg"
-          class="full-width bg-white"
-          outline
-          rounded
-          color="primary"
-          label="Login"
-          to="/auth/login"
-        />
-      </div> -->
 
   <q-dialog v-model="alert" position="bottom" backdrop-filter="blur(4px)">
+    <div class="text-center" style="width: 100%; position: fixed; top: 4%">
+      <div class="row">
+        <q-btn
+          label="Back"
+          :ripple="false"
+          flat
+          no-caps
+          icon="mdi-arrow-left"
+          @click="closeSingUp"
+          v-close-popup
+        ></q-btn>
+      </div>
+    </div>
     <div
       class="column items-center bg-white justify-center body-text"
       style="min-height: 100vh; min-width: 100vw; border-radius: 0px"
@@ -192,9 +199,8 @@
             class="text-center q-py-md"
             style="width: 84%; font-size: 20px; margin: auto"
           >
-            To complete your registration, A
-            confirmation link has been sent to your email
-            <b>{{ form.email }}</b>
+            We have sent an email to
+            <b>{{ form.email }}</b> to confirm registration.
           </div>
         </div>
         <div class="row q-my-lg items-center justify-center">
@@ -329,6 +335,10 @@ const handleRegister = async () => {
 function openMailApp() {
   const mailtoLink = "mailto:";
   window.location.href = mailtoLink;
+}
+
+function closeSingUp() {
+  document.getElementById("close-signup").click();
 }
 
 onMounted(() => {

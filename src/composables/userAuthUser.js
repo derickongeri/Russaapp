@@ -90,11 +90,10 @@ export default function userAuthUser() {
   };
 
   const updateUserPassword = async (new_password) => {
-    const { user, error } = await supabase.auth.updateUser({
+    const { data, error } = await supabase.auth.updateUser({
       password: new_password,
     });
     if (error) throw error;
-    return user;
   };
 
   return {
