@@ -56,11 +56,12 @@ export default route(function (/* { store, ssrContext } */) {
       !isLoggedIn() &&
       to.meta.requiresAuth &&
       !Object.keys(to.query).includes("fromEmail") &&
-      to.name !== "auth"
+      to.name !== "auth" &&
+      to.name !== "resetpassword"
     ) {
       // Redirect to the login/auth page if the user is not logged in
       return { name: "auth" };
-    } 
+    }
   });
 
   return Router;
