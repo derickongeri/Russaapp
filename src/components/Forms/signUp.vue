@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row q-px-md form-text text-primary">Your Name</div>
-    <div class="row q-py-md q-gutter-sm">
+    <div class="row q-py-sm q-gutter-sm">
       <div class="col">
         <q-input
           dense
@@ -34,9 +34,18 @@
 
   <div>
     <div class="row q-px-md form-text text-primary">Select Country</div>
-    <div class="row q-py-md q-gutter-sm">
+    <div class="row q-py-sm q-gutter-sm">
       <div class="col">
-        <q-select
+        <q-btn class="full-width" no-caps color="grey-6" rounded outline unelevated text-color="" label="" @click="selectCountryDialog = !selectCountryDialog">
+          <div class="row q-py-xs items-center justify-between" style="width: 100%;">
+            <div class="text-grey-8">
+              {{ form.country || 'Select country' }}
+            </div>
+            <q-space/>
+            <i class="fa-solid fa-caret-down"></i>
+          </div>
+          <!-- <q-select
+          :disable="true"
           dense
           rounded
           outlined
@@ -51,14 +60,16 @@
           :rules="[
             (val) => (val && val.length > 0) || $t('Field is required *'),
           ]"
-        />
+        /> -->
+        </q-btn>
+
       </div>
     </div>
   </div>
 
   <div>
     <div class="row q-px-md form-text text-primary">Email Address</div>
-    <div class="row q-py-md q-gutter-sm">
+    <div class="row q-py-sm q-gutter-sm">
       <div class="col">
         <q-input
           type="email"
@@ -121,8 +132,6 @@
               (val && val.length > 0 && val !== password) ||
               $t('Passwords do not match*'),
           ]"
-          @focus="visibleKeybord = true"
-          @blur="visibleKeybord = false"
         >
           <template v-slot:append>
             <q-icon
@@ -134,12 +143,6 @@
       </div>
     </div>
   </div>
-
-  <div
-    v-if="visibleKeybord"
-    class="row q-mt-lg"
-    style="width: 100%; min-height: 30vh"
-  ></div>
 
   <div class="row q-pt-md">
     <q-btn
@@ -154,6 +157,29 @@
       @click="handleRegister"
     />
   </div>
+
+  <q-dialog v-model="selectCountryDialog" backdrop-filter="blur(4px)">
+    <q-card class="bg-white" style="min-height: 70vh; width: 100%">
+      <q-input
+        square
+        outline
+        v-model="countrySearch"
+        :dense="dense"
+        @update:model-value="filterFn()"
+      >
+        <template v-slot:prepend>
+          <div class="q-px-sm">
+            <q-icon name="mdi-magnify" />
+          </div>
+        </template>
+      </q-input>
+      <q-list v-for="country in filteredCountries" :key="id">
+        <q-item clickable v-ripple v-close-popup @click="selectCountry(country)">
+          <q-item-section>{{ country }}</q-item-section>
+        </q-item></q-list
+      >
+    </q-card>
+  </q-dialog>
 
   <q-dialog v-model="alert" position="bottom" backdrop-filter="blur(4px)">
     <div class="text-center" style="width: 100%; position: fixed; top: 4%">
@@ -254,7 +280,14 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, onBeforeMount, computed, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  onBeforeMount,
+  computed,
+  onMounted,
+  watch,
+} from "vue";
 import { useQuasar, QSpinnerFacebook, QSpinnerHearts } from "quasar";
 import userAuthUser from "src/composables/userAuthUser";
 import useNotify from "src/composables/useNotify";
@@ -294,7 +327,7 @@ const form = ref({
     email: "",
     password: "",
   }),
-  text = ref(""),
+  countrySearch = ref(""),
   password = ref(""),
   isPwd = ref(true),
   model = ref(null),
@@ -302,7 +335,7 @@ const form = ref({
   alert = ref(false);
 
 const confirmedpassword = ref("");
-const visibleKeybord = ref(false);
+const selectCountryDialog = ref(false);
 
 //method to handle login and redirect to dashboard
 const handleRegister = async () => {
@@ -344,6 +377,20 @@ function closeSingUp() {
 onMounted(() => {
   countries.value = getCountryNames(countriesData);
 });
+
+const filteredCountries = computed(() => {
+  if (!countrySearch.value) {
+    countries.value = getCountryNames(countriesData);
+    return countries.value
+  }
+  return getCountryNames(countriesData).filter(country =>
+    country.toLowerCase().includes(countrySearch.value.toLowerCase())
+  );
+});
+
+const selectCountry = (country) => {
+  form.value.country = country;
+};
 </script>
 
 <style>
@@ -353,6 +400,7 @@ onMounted(() => {
 }
 
 .custom-dialog {
+  margin-top: 20vh;
   padding-top: 50px; /* Adjust this to move content down from the top */
 }
 </style>
