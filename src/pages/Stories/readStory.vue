@@ -129,7 +129,7 @@
         </div>
 
         <div v-if="showComments" class="">
-          <div v-if="visible" class="row">
+          <!-- <div v-if="visible" class="row">
             <div class="col-1">
               <q-item class="q-pt-lg">
                 <q-item-section top avatar>
@@ -176,50 +176,11 @@
                     >
                       {{ newComment }}
                     </div>
-
-                    <!-- <div class="row items-center" style="font-size: 16px">
-                        <q-space />
-                        <q-btn
-                          v-if="comment.owner.email === user.email"
-                          no-caps
-                          flat
-                          dense
-                          size=""
-                          color="primary"
-                          @click="
-                            OpenDeleteItemDialog('comment', comment.comment_id)
-                          "
-                        >
-                          <q-icon
-                            size="xs"
-                            name="mdi-delete-forever-outline"
-                            color="primary"
-                          />
-                          <div class="q-px-sm">Delete</div>
-                        </q-btn>
-                        <q-btn
-                          v-else
-                          no-caps
-                          flat
-                          size=""
-                          color="primary"
-                          @click="
-                            openDialog('bottom', 'comment', comment.comment_id)
-                          "
-                        >
-                          <div class="q-px-sm">Report</div>
-                          <q-icon
-                            size="xs"
-                            name="mdi-chat-alert-outline"
-                            color="primary"
-                          />
-                        </q-btn>
-                      </div> -->
                   </q-item-section>
                 </q-item>
               </q-card>
             </div>
-          </div>
+          </div> -->
           <q-list v-for="comment in comments" :key="comment.id">
             <div class="row">
               <div class="col-1">
@@ -379,6 +340,7 @@
     @show="focusInput"
     position="bottom"
     backdrop-filter="blur(4px)"
+    persistent
   >
     <q-card class="body-text" style="min-height: 30vh; border-radius: 20px">
       <q-card-section class="row items-center q-pb-none">

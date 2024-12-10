@@ -78,6 +78,19 @@ const routes = [
   },
 
   {
+    path: "/stories",
+    component: () => import("layouts/stories.vue"),
+    children: [
+      {
+        path: "/terms",
+        name: "terms",
+        component: () => import("pages/user/termsandconditions.vue"),
+        meta: { title: "Terms and Conditions" },
+      },
+    ],
+  },
+
+  {
     path: "/Logs",
     component: () => import("layouts/journalLayout.vue"),
     children: [

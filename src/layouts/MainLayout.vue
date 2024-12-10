@@ -196,7 +196,7 @@ const drawerLinks = ref([
   },
   { name: "Share the app", caption: "", toPage: "/share" },
   { name: "Share feedback", caption: "", toPage: "/feedback" },
-  { name: "Terms and Conditions", caption: "", toPage: "/terms" },
+  { name: "Terms and Conditions", caption: "", toPage: "terms" },
   { name: "Privacy policy", caption: "", toPage: "/privacy" },
   { name: "Log out", caption: "", toPage: "logout" },
 ]);
