@@ -28,4 +28,4 @@ echo "Pushhing to github..."
 git push $REPO_URL main
 
 # deploying to dev server
-scp -r /home/derick/Desktop/Menopause/RUSA/dist/spa/* root@139.84.226.65:/var/www/html/rusa-app
+scp -r /Users/derickongeri/Desktop/Russaapp/dist/spa/* root@139.84.226.65:/var/www/html/rusa-app
