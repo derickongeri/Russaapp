@@ -199,20 +199,37 @@
   border-top: solid 3px #829121;
 }
 
+// .main-header {
+//   width: 100vw;
+//   // height: 104px;
+//   flex-grow: 0;
+//   padding: 0 0 0px;
+//   background-image: linear-gradient(
+//       to bottom,
+//       rgba(0, 0, 0, 0.35),
+//       rgba(0, 0, 0, 0.35)
+//     ),
+//     linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%),
+//     url("~/src/assets/SplashScreen.png");
+//   background-size: cover;
+//   background-position: center;
+// }
+
 .main-header {
   width: 100vw;
   // height: 104px;
   flex-grow: 0;
   padding: 0 0 0px;
-  background-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.35)
-    ),
-    linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%),
-    url("~/src/assets/SplashScreen.png");
-  background-size: cover;
-  background-position: center;
+  // background-image: linear-gradient(
+  //     to bottom,
+  //     rgba(0, 0, 0, 0.35),
+  //     rgba(0, 0, 0, 0.35)
+  //   ),
+  //   linear-gradient(71deg, rgba(116, 178, 129, 0) 21%, #868686b6 99%),
+  //   url("~/src/assets/SplashScreen.png");
+  // background-size: cover;
+  // background-position: center;
+  background-color: #003f36;
 }
 
 .head-text {

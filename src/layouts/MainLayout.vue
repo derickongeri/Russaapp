@@ -16,7 +16,15 @@
             icon="mdi-menu"
             @click="toggleLeftDrawer"
           />
-          {{ currentRouteTitle }}
+          <div v-if="currentRouteTitle == 'Rusa'" style="min-width: 30vw;">
+            <q-img
+              src="~src/assets/orusa.svg"
+              alt="Menopause app graphic"
+              class="q-mb-md"
+              style="max-width: 150px"
+            />
+          </div>
+          <div v-else>{{ currentRouteTitle }}</div>
         </div>
       </div>
     </q-header>
